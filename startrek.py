@@ -28,24 +28,24 @@ def connect():
 '''
 def read_db_config(filename='dbconfig.ini', section='mysql'):
 	""" Read database configuration file and return a dictionary object
-    :param filename: name of the configuration file
-    :param section: section of database configuration
-    :return: a dictionary of database parameters
-    """
-    # create parser and read ini configuration file
-    parser = ConfigParser()
-    parser.read(filename)
+	:param filename: name of the configuration file
+	:param section: section of database configuration
+	:return: a dictionary of database parameters
+	"""
+	# create parser and read ini configuration file
+	parser = ConfigParser()
+	parser.read(filename)
 
-    # get section, default to mysql
-    db = {}
-    if parser.has_section(section):
-        items = parser.items(section)
-        for item in items:
-            db[item[0]] = item[1]
-    else:
-        raise Exception('{0} not found in the {1} file'.format(section, filename))
+	# get section, default to mysql
+	db = {}
+	if parser.has_section(section):
+		items = parser.items(section)
+		for item in items:
+			db[item[0]] = item[1]
+	else:
+		raise Exception('{0} not found in the {1} file'.format(section, filename))
 
-    return db
+	return db
 
 def connect():
 	""" Connect to MySQL database """
@@ -72,24 +72,24 @@ def connect():
 			pass
 
 def query_with_fetchone():
-    try:
-        dbconfig = read_db_config()
-        conn = MySQLConnection(**dbconfig)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM players")
+	try:
+		dbconfig = read_db_config()
+		conn = MySQLConnection(**dbconfig)
+		cursor = conn.cursor()
+		cursor.execute("SELECT * FROM players")
 
-        row = cursor.fetchone()
+		row = cursor.fetchone()
 
-        while row is not None:
-            print(row)
-            row = cursor.fetchone()
+		while row is not None:
+			print(row)
+			row = cursor.fetchone()
 
-    except Error as e:
-        print(e)
+	except Error as e:
+		print(e)
 
-    finally:
-        cursor.close()
-        conn.close()
+	finally:
+		cursor.close()
+		conn.close()
 
 
 # Show random screen
