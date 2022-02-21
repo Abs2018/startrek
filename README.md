@@ -6,4 +6,3 @@ The following needs to be installed locally on your computer.
 
 1. Python 3.10
 2. MySQL Database
-
