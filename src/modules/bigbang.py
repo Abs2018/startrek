@@ -16,63 +16,81 @@ def bb_main_menu():
         art.cd(226, '', "\tTHE BIG BANG", "", True)
         print("")
 
-        #!!!!!!!!!!! Check to see if there is a star in the galaxy. If so, show menu option to delete the galaxy.
+        connection = db.stdb()
+        query = "select * from `stars` LIMIT 1"
+        results = db.rowcount(connection, query)
+        if results != 0:
+            art.cd(5, '', "\t<", "", False)
+            art.cd('81', '', "C", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(196, '', "Delete Galaxy", "", True)
+            print("")
 
-        # Row 1
-        art.cd(5, '', "\t<", "", False)
-        art.cd('light_cyan', '', "1", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(2, '', "How many sectors should exist in the galaxy? ", "", False)
-        art.cd(226, '', str(sectors), "", True)
+            # Row ??
+            art.cd(5, '', "\t<", "", False)
+            art.cd('226', '', "Q", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(2, '', "Return to previous menu", "", True)
+            # Footer
+            art.cd("", "", "", "reset", True)
+        else:
+            # Row 1
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "1", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(2, '', "How many sectors should exist in the galaxy? ", "", False)
+            art.cd(226, '', str(sectors), "", True)
 
-        # Row 2
-        art.cd(5, '', "\t<", "", False)
-        art.cd('light_cyan', '', "2", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(2, '', "What chance is there of a star forming in a sector? ", "", False)
-        art.cd(226, '', str(stars), "", False)
-        art.cd(226, '', "%", "", True)
+            # Row 2
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "2", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(
+                2, '', "What chance is there of a star forming in a sector? ", "", False)
+            art.cd(226, '', str(stars), "", False)
+            art.cd(226, '', "%", "", True)
 
-        # Row 3
-        art.cd(5, '', "\t<", "", False)
-        art.cd('light_cyan', '', "3", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(
-            2, '', "What chance is there that there will be planets around a star? ", "", False)
-        art.cd(226, '', str(planets), "", False)
-        art.cd(226, '', "%", "", True)
+            # Row 3
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "3", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(
+                2, '', "What chance is there that there will be planets around a star? ", "", False)
+            art.cd(226, '', str(planets), "", False)
+            art.cd(226, '', "%", "", True)
 
-        # Row 4
-        art.cd(5, '', "\t<", "", False)
-        art.cd('light_cyan', '', "4", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(2, '', "How many civilizations should be created? ", "", False)
-        art.cd(226, '', str(civilizations), "", True)
+            # Row 4
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "4", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(2, '', "How many civilizations should be created? ", "", False)
+            art.cd(226, '', str(civilizations), "", True)
 
-        # Row 5
-        art.cd(5, '', "\t<", "", False)
-        art.cd('light_cyan', '', "5", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(2, '', "How many empires should be created? ", "", False)
-        art.cd(226, '', str(empires), "", True)
+            # Row 5
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "5", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(2, '', "How many empires should be created? ", "", False)
+            art.cd(226, '', str(empires), "", True)
 
-        # Row 6
-        print("")
-        art.cd(5, '', "\t<", "", False)
-        art.cd('81', '', "C", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(6, '', "Create the galaxy!", "", True)
-        print("")
+            # Row 6
+            print("")
+            art.cd(5, '', "\t<", "", False)
+            art.cd('81', '', "C", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(6, '', "Create the galaxy!", "", True)
+            print("")
 
-        # Row ??
-        art.cd(5, '', "\t<", "", False)
-        art.cd('226', '', "Q", "", False)
-        art.cd(5, '', "> ", "", False)
-        art.cd(2, '', "Return to previous menu", "", True)
-        # Footer
-        art.cd("", "", "", "reset", True)
+            # Row ??
+            art.cd(5, '', "\t<", "", False)
+            art.cd('226', '', "Q", "", False)
+            art.cd(5, '', "> ", "", False)
+            art.cd(2, '', "Return to previous menu", "", True)
+            # Footer
+            art.cd("", "", "", "reset", True)
 
     def bigbang(sectors, stars, planets, civilizations, empires):
+        #!!!! Whatever changes you make in the bigbang function, please add the opposite in the bigdark function.
         # Get the star types from the database and store them in a list.
         starclass = []
         connection = db.stdb()
@@ -164,15 +182,11 @@ def bb_main_menu():
                         rand = random.randrange(0, 100)
                         if 5 <= rand:
                             # Create and save rogue planet.
-                            starplanets = random.randrange(1, 10)
-                            planetcount = planetcount + starplanets
-                            planetcounter = 0
-                            while planetcounter < starplanets:
-                                connection = db.stdb()
-                                query = "INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES ('"+str(
-                                    x)+"','"+str(y)+"','8')"
-                                db.query(connection, query)
-                                planetcounter = planetcounter + 1
+                            planetcount = planetcount + 1
+                            connection = db.stdb()
+                            query = "INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES ('"+str(
+                                x)+"','"+str(y)+"','8')"
+                            db.query(connection, query)
 
                     # Coordinate cleanup
                     x = x+1
@@ -181,7 +195,11 @@ def bb_main_menu():
                     sectorcount = sectorcount + 1
                     #print("Sector count:"+str(sectorcount))
                     #print("Total Sectors:"+str(totalsectors))
-                    if sectorcount == int(totalsectors*0.1):
+                    if sectorcount == 1:
+                        print("")
+                        art.cd(
+                            4, '', "Beginning galaxy creation. Depending on the number of sectors, this could take some time.", "reset", True)
+                    elif sectorcount == int(totalsectors*0.1):
                         art.cd(22, '', "10% completed...", "reset", True)
                     elif sectorcount == int(totalsectors*0.2):
                         art.cd(23, '', "20% completed...", "reset", True)
@@ -215,6 +233,23 @@ def bb_main_menu():
         art.cd(2, '', " planets created.", "reset", True)
         print("")
         art.cd(4, '', "Enjoy exploring the galaxy!", "reset", True)
+
+    def bigdark():
+        # Clear the Stars Table
+        connection = db.stdb()
+        query = "TRUNCATE `stars`"
+        db.query(connection, query)
+        # Clear the Planets Table
+        connection = db.stdb()
+        query = "TRUNCATE `planets`"
+        db.query(connection, query)
+        daletegalaxy = False
+        art.cd(23, '', "Once teeming with life, all the planets in the galaxy are no more. There shall never again be thought, love, or beauty experienced by anyone.", "reset", True)
+        art.cd(22, '', "All the stars have been destroyed and the galaxy descends into darkness. Perhaps it is a blessing that there was no one around to see it.", "reset", True)
+        print("")
+        art.cd(4, '', "The galaxy has been destroyed. I really hope our galaxy isn't a simulation too.", "reset", True)
+        print("")
+        bbmenu(sectors, stars, planets, civilizations, empires)
 
     # Define default galaxy generation setting values
     sectors = 100
@@ -254,7 +289,13 @@ def bb_main_menu():
                 print("")
                 bbmenu(sectors, stars, planets, civilizations, empires)
             case ('c' | 'C'):
-                bigbang(sectors, stars, planets, civilizations, empires)
+                connection = db.stdb()
+                query = "select * from `stars` LIMIT 1"
+                results = db.rowcount(connection, query)
+                if results != 0:
+                    bigdark()
+                else:
+                    bigbang(sectors, stars, planets, civilizations, empires)
                 print("")
             case ('?' | ''):
                 print("")

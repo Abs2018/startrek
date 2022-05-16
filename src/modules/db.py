@@ -53,3 +53,19 @@ def querymany(connection, query, data):
     connection.commit()
     connection.close()
     return result
+
+
+def rowcount(connection, query):
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(query)
+        # print("Query run successfully")
+        result = cursor.fetchall()
+        result = cursor.rowcount
+    except Error as e:
+        # print(f"The error '{e}' occurred")
+        result = "FALSE"
+
+    connection.commit()
+    connection.close()
+    return result
