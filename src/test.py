@@ -1,13 +1,24 @@
 # https://tutorialedge.net/python/python-multiprocessing-tutorial/
 
+from modules import art
 import multiprocessing as mp
+import math
+import random
+import time
+# 12 CPU
+startTime = time.time()
 
-sectors = 1000
+
+sectors = 3
+stars = 50
+planets = 50
+civilizations = 10
+empires = 3
 # We add one to account for the 0,0 coordinates.
 diameter = int(math.sqrt(int(sectors)))+1
 # Total area of the galaxy equals length * width
 totalsectors = diameter * diameter
-#print("The galaxy will be "+str(diameter) +" sectors wide and tall for a total of "+str(totalsectors)+".")
+# print("The galaxy will be "+str(diameter) +" sectors wide and tall for a total of "+str(totalsectors)+".")
 radius = math.floor(diameter/2)
 x = radius*-1
 y = radius
@@ -16,12 +27,14 @@ y = radius
 sectorcount = 0
 xdiametercount = 0
 ydiametercount = 0
-starcount = 0  # Total number of stars created in the galaxy
-planetcount = 0  # Total number of planets created in the galaxy
 
 
 def bigbanggen(x, y):
     # Stars
+    starcount = 0  # Total number of stars created in the galaxy
+    planetcount = 0  # Total number of planets created in the galaxy
+    starclass = [1, 2, 3, 4, 5, 6, 7, 8]
+    planetclass = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     rand = random.randrange(0, 100)
     # The random numbers lands within the percentage.
     if int(stars) <= rand:
@@ -33,22 +46,23 @@ def bigbanggen(x, y):
             # Randomly pick the class
             scid = random.choice(starclass)
             # Insert into database. Get the sid of the star.
-            #connection = db.stdb()
-            print = "INSERT INTO `stars` (`x`, `y`, `starname`, `scid`) VALUES ('"+str(
-                    x)+"','"+str(y)+"','','"+str(scid)+"')"
-            #cursor = connection.cursor(dictionary=True)
-            try:
-                cursor.execute(query)
-                # print("Query run successfully")
-                result = cursor.fetchall()
-            except Error as e:
-                # print(f"The error '{e}' occurred")
-                result = "FALSE"
-            connection.commit()
-            sid = cursor.lastrowid
-            connection.close()
+            # connection = db.stdb()
+            print("INSERT INTO `stars` (`x`, `y`, `starname`, `scid`) VALUES ('"+str(
+                x)+"','"+str(y)+"','','"+str(scid)+"')")
+            # cursor = connection.cursor(dictionary=True)
+            # try:
+            #     cursor.execute(query)
+            #     # print("Query run successfully")
+            #     result = cursor.fetchall()
+            # except Error as e:
+            #     # print(f"The error '{e}' occurred")
+            #     result = "FALSE"
+            # connection.commit()
+            # sid = cursor.lastrowid
+            # connection.close()
             starcounter = starcounter + 1
             rand = random.randrange(0, 100)
+            sid = random.randrange(0, 100)
             if int(planets) <= rand:
                 # For each star, create a random number of planets up to 10.
                 starplanets = random.randrange(1, 10)
@@ -56,41 +70,46 @@ def bigbanggen(x, y):
                 planetcounter = 0
                 while planetcounter < starplanets:
                     pcid = random.choice(planetclass)
-                    connection = db.stdb()
-                    query = "INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`) VALUES ('"+str(
-                            x)+"','"+str(y)+"','"+str(sid)+"','"+str(pcid)+"')"
-                    db.query(connection, query)
+                    # connection = db.stdb()
+                    print("INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`) VALUES ('"+str(
+                        x)+"','"+str(y)+"','"+str(sid)+"','"+str(pcid)+"')")
+                    # db.query(connection, query)
                     planetcounter = planetcounter + 1
 
-        #print("There is "+str(systemstars)+" star in this sector.")
+        # print("There is "+str(systemstars)+" star in this sector.")
     else:  # There is no star.
         # Calculate the odds of a rogue planet. Let's say 5%
         rand = random.randrange(0, 100)
         if 5 <= rand:
             # Create and save rogue planet.
             planetcount = planetcount + 1
-            connection = db.stdb()
-            query = "INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES ('"+str(
-                    x)+"','"+str(y)+"','8')"
-            db.query(connection, query)
+            # connection = db.stdb()
+            print("INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES ('"+str(
+                x)+"','"+str(y)+"','8')")
+            # db.query(connection, query)
 
 
 # Create the sectors using a while loop.
+jobs = []
 while sectorcount < totalsectors:  # Go through the number of sectors.
     # print("Sector Count: "+str(sectorcount))
     # While the height of the galaxy is less than the maximum height.
     while ydiametercount < diameter:
         # While the width of the galaxy is less than the maximum width.
         while xdiametercount < diameter:
-            #print("Coordinates: "+str(x)+","+str(y))
-            bigbanggen(x, y)
+            # print("Coordinates: "+str(x)+","+str(y))
+            # bigbanggen(x, y)
+            # for i in range(5):
+            p = mp.Process(target=bigbanggen, args=(x, y))
+            jobs.append(p)
+            p.start()
             # Coordinate cleanup
             x = x+1
             xdiametercount = xdiametercount+1
             # Increase the sector count.
             sectorcount = sectorcount + 1
-            #print("Sector count:"+str(sectorcount))
-            #print("Total Sectors:"+str(totalsectors))
+            # print("Sector count:"+str(sectorcount))
+            # print("Total Sectors:"+str(totalsectors))
             if sectorcount == 1:
                 print("")
                 art.cd(
@@ -120,3 +139,6 @@ while sectorcount < totalsectors:  # Go through the number of sectors.
         y = y-1  # Work your way down the y-axis
         xdiametercount = 0
         ydiametercount = ydiametercount+1
+
+executionTime = (time.time() - startTime)
+print('Execution time in seconds: ' + str(executionTime))
