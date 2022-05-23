@@ -11,7 +11,7 @@ def stdb():
     connection = None
     try:
         connection = mysql.connector.connect(
-            host="localhost",
+            host="127.0.0.1",
             user="root",
             passwd="",
             database='startrek'
@@ -45,7 +45,7 @@ def querymany(connection, query, data):
     cursor = connection.cursor(dictionary=True)
     try:
         cursor.executemany(query, data)
-        # print("Query run successfully")
+        #print("Query run successfully")
         result = cursor.fetchall()
     except Error as e:
         #print(f"The error '{e}' occurred")

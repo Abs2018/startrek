@@ -7,16 +7,11 @@ from modules import db
 from modules import art
 
 # TODO
-# * Validate inputs. Right now you can enter anything into the Big Bang options.
 # * Use a percentage to figure out if a planet will be inhabited.
-# * Add an algorithm for nebulas that may impact sensor performance.
-# * Create black holes.
-# * Add civilizations: these are the lifeforms that live on a planet.
-# * Add empires: there are the organizations that rule over planets.
 
 
 def bb_main_menu():
-    def bbmenu(sectors, roguechance, stars, planets, civilizations, empires):
+    def bbmenu(sectors, stars, planets, civilizations, empires):
         print("")
         art.cd(226, '', "\tTHE BIG BANG", "", True)
         print("")
@@ -43,8 +38,7 @@ def bb_main_menu():
             art.cd(5, '', "\t<", "", False)
             art.cd('light_cyan', '', "1", "", False)
             art.cd(5, '', "> ", "", False)
-            art.cd(
-                2, '', "Approximately how many sectors should exist in the galaxy? ", "", False)
+            art.cd(2, '', "How many sectors should exist in the galaxy? ", "", False)
             art.cd(226, '', str(sectors), "", True)
 
             # Row 2
@@ -52,8 +46,8 @@ def bb_main_menu():
             art.cd('light_cyan', '', "2", "", False)
             art.cd(5, '', "> ", "", False)
             art.cd(
-                2, '', "What chance is there that an empty sector will have a rogue planet? ", "", False)
-            art.cd(226, '', str(roguechance), "", False)
+                2, '', "What chance is there of a star forming in a sector? ", "", False)
+            art.cd(226, '', str(stars), "", False)
             art.cd(226, '', "%", "", True)
 
             # Row 3
@@ -61,34 +55,25 @@ def bb_main_menu():
             art.cd('light_cyan', '', "3", "", False)
             art.cd(5, '', "> ", "", False)
             art.cd(
-                2, '', "What chance is there of a star forming in a sector? ", "", False)
-            art.cd(226, '', str(stars), "", False)
+                2, '', "What chance is there that there will be planets around a star? ", "", False)
+            art.cd(226, '', str(planets), "", False)
             art.cd(226, '', "%", "", True)
 
             # Row 4
             art.cd(5, '', "\t<", "", False)
             art.cd('light_cyan', '', "4", "", False)
             art.cd(5, '', "> ", "", False)
-            art.cd(
-                2, '', "What chance is there that there will be planets around a star? ", "", False)
-            art.cd(226, '', str(planets), "", False)
-            art.cd(226, '', "%", "", True)
+            art.cd(2, '', "How many civilizations should be created? ", "", False)
+            art.cd(226, '', str(civilizations), "", True)
 
             # Row 5
             art.cd(5, '', "\t<", "", False)
             art.cd('light_cyan', '', "5", "", False)
             art.cd(5, '', "> ", "", False)
-            art.cd(2, '', "How many civilizations should be created? ", "", False)
-            art.cd(226, '', str(civilizations), "", True)
-
-            # Row 6
-            art.cd(5, '', "\t<", "", False)
-            art.cd('light_cyan', '', "6", "", False)
-            art.cd(5, '', "> ", "", False)
             art.cd(2, '', "How many empires should be created? ", "", False)
             art.cd(226, '', str(empires), "", True)
 
-            # Row 7
+            # Row 6
             print("")
             art.cd(5, '', "\t<", "", False)
             art.cd('81', '', "C", "", False)
@@ -104,32 +89,8 @@ def bb_main_menu():
             # Footer
             art.cd("", "", "", "reset", True)
 
-    def bigbang(sectors, roguechance, stars, planets, civilizations, empires):
+    def bigbang(sectors, stars, planets, civilizations, empires):
         #!!!! Whatever changes you make in the bigbang function, please add the opposite in the bigdark function.
-        # Do the math around the sector coordinates. Our galaxies will be a square grid.
-
-        # We add one to account for the 0,0 coordinates.
-        diameter = int(math.sqrt(int(sectors)))+1
-        # Total area of the galaxy equals length * width
-        totalsectors = diameter * diameter
-        # print("The galaxy will be "+str(diameter) +" sectors wide and tall for a total of "+str(totalsectors)+".")
-        radius = math.floor(diameter/2)
-        x = radius*-1
-        y = radius
-        # print(x)
-        # print(y)
-
-        # * Create counters
-        sectorcount = 0  # Total number of sectors tracker
-        xdiametercount = 0  # Current X coordinate pointer
-        ydiametercount = 0  # Current Y coordinate pointer
-        starcount = 0  # Total number of stars created in the galaxy
-        planetcount = 0  # Total number of planets created in the galaxy
-        allstars = []  # The star data for the executemany SQL function
-        planetswithstars = []  # planet The data for the executemany SQL function
-        rogueplanets = []  # The rogue planet data for the executemany SQL function
-        totaljobs = 4
-
         # Get the star types from the database and store them in a list.
         starclass = []
         connection = db.stdb()
@@ -138,116 +99,6 @@ def bb_main_menu():
         for row in results:
             starclass.append(row["scid"])
 
-        # * BEGIN GALAXY CREATION
-        # Create the sectors using a while loop.
-        while sectorcount < totalsectors:  # Go through the number of sectors.
-            # print("Sector Count: "+str(sectorcount))
-            # While the height of the galaxy is less than the maximum height.
-            while ydiametercount < diameter:
-                # While the width of the galaxy is less than the maximum width.
-                while xdiametercount < diameter:
-                    # print("Coordinates: "+str(x)+","+str(y))
-                    # Stars
-                    rand = random.randrange(0, 100)
-                    # The random numbers lands within the percentage.
-                    if int(stars) <= rand:
-                        # Randomly pick the number of stars in this sector.
-                        systemstars = random.randrange(1, 8)
-                        # Add to the total number of stars in the galaxy.
-                        starcount = starcount + systemstars
-                        # Set the loop counter.
-                        starcounter = 0
-                        while starcounter < systemstars:
-                            # Randomly pick the class
-                            scid = random.choice(starclass)
-                            # Create the list of sector star details.
-                            temp = (str(x), str(y), '', str(scid))
-                            allstars.append(temp)
-                            # Add to the total star tracker.
-                            starcounter = starcounter + 1
-
-                        # print("There is "+str(systemstars)+" star in this sector.")
-                    else:  # There is no star.
-                        # Calculate the odds of a rogue planet. Let's say 5%
-                        rand = random.randrange(0, 100)
-                        if roguechance <= rand:
-                            # Create and save rogue planet.
-                            planetcount = planetcount + 1
-                            temp = (x, y, 8)
-                            rogueplanets.append(temp)
-
-                    # Coordinate cleanup
-                    x = x+1
-                    xdiametercount = xdiametercount+1
-                    # Increase the sector count.
-                    sectorcount = sectorcount + 1
-                    # print("Sector count:"+str(sectorcount))
-                    # print("Total Sectors:"+str(totalsectors))
-                    # totalobjs = sectorcount+starcount+planetcount
-                    # f = open("bigbangstats.txt", "w")
-                    # f.write("Sector Number: "+str(sectorcount)+"\nStar Count: " +
-                    #         str(starcount)+"\nPlanet Count: "+str(planetcount)+"\nSum: "+str(totalobjs))
-                    # f.close()
-                    if sectorcount == 1:
-                        print("")
-                        art.cd(
-                            4, '', "Beginning galaxy creation. Depending on the number of sectors, this could take some time.", "reset", True)
-                        text = "(1/"+str(totaljobs) + \
-                            ") Dividing the galaxy into sectors..."
-                        art.cd(
-                            22, '', text, "reset", False)
-                    elif sectorcount == int(totalsectors):
-                        art.cd(15, '', "\t\t\t\t\t[ ", "reset", False)
-                        art.cd(46, '', "DONE", "reset", False)
-                        art.cd(15, '', " ]", "reset", True)
-
-                x = radius*-1  # Bring this all the way back to the left.
-                y = y-1  # Work your way down the y-axis
-                xdiametercount = 0
-                ydiametercount = ydiametercount+1
-
-        # * ROGUE PLANETS
-        # Display task text.
-        text = "(2/"+str(totaljobs) + \
-            ") Creating rogue planets..."
-        art.cd(
-            23, '', text, "reset", False)
-
-        # Insert all the rogue planets.
-        connection = db.stdb()
-        query = "INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES (%s,%s, %s)"
-        db.querymany(connection, query, rogueplanets)
-
-        # Task completed text.
-        art.cd(15, '', "\t\t\t\t\t\t\t[ ", "reset", False)
-        art.cd(46, '', "DONE", "reset", False)
-        art.cd(15, '', " ]", "reset", True)
-
-        # * STARS
-        # Display task text.
-        text = "(3/"+str(totaljobs) + \
-            ") Forming stars..."
-        art.cd(
-            24, '', text, "reset", False)
-
-        # Insert all the stars
-        connection = db.stdb()
-        # print(allstars)
-        # print(rogueplanets)
-        query = "INSERT INTO `stars` (`x`, `y`, `starname`, `scid`) VALUES (%s,%s, %s, %s)"
-        db.querymany(connection, query, allstars)
-
-        # Task completed text.
-        art.cd(15, '', "\t\t\t\t\t\t\t\t[ ", "reset", False)
-        art.cd(46, '', "DONE", "reset", False)
-        art.cd(15, '', " ]", "reset", True)
-
-        # * PLANETS
-        # Display task text.
-        text = "(4/"+str(totaljobs) + \
-            ") Adding planets in orbit..."
-        art.cd(
-            25, '', text, "reset", False)
         # Get the planet types and store them in a list.
         planetclass = []
         connection = db.stdb()
@@ -258,35 +109,130 @@ def bb_main_menu():
         # Drop the rogue planet pcid, as we do not need it in the list.
         planetclass.remove(8)
 
-        # Query the stars for the sid
-        connection = db.stdb()
-        query = "select `sid`, `x`, `y` from `stars`"
-        results = db.query(connection, query)
-        for row in results:
-            # Create the planets
-            rand = random.randrange(0, 100)
-            if int(planets) <= rand:
-                # For each star, create a random number of planets up to 10.
-                starplanets = random.randrange(1, 10)
-                planetcount = planetcount + starplanets
-                planetcounter = 0
-                while planetcounter < starplanets:
-                    pcid = random.choice(planetclass)
-                    temp = (row["x"], row["y"], row["sid"], pcid)
-                    planetswithstars.append(temp)
-                    planetcounter = planetcounter + 1
+        # Do the math around the sector coordinates. Our galaxies will be a square grid.
 
-        # Save the planets to the database.
-        connection = db.stdb()
-        query = "INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`) VALUES (%s, %s, %s, %s)"
-        db.querymany(connection, query, planetswithstars)
+        # We add one to account for the 0,0 coordinates.
+        diameter = int(math.sqrt(int(sectors)))+1
+        # Total area of the galaxy equals length * width
+        totalsectors = diameter * diameter
+        #print("The galaxy will be "+str(diameter) +" sectors wide and tall for a total of "+str(totalsectors)+".")
+        radius = math.floor(diameter/2)
+        x = radius*-1
+        y = radius
+        # print(x)
+        # print(y)
+        sectorcount = 0
+        xdiametercount = 0
+        ydiametercount = 0
+        starcount = 0  # Total number of stars created in the galaxy
+        planetcount = 0  # Total number of planets created in the galaxy
 
-        # Task completed text.
-        art.cd(15, '', "\t\t\t\t\t\t[ ", "reset", False)
-        art.cd(46, '', "DONE", "reset", False)
-        art.cd(15, '', " ]", "reset", True)
+        # Create the sectors using a while loop.
+        while sectorcount < totalsectors:  # Go through the number of sectors.
+            # print("Sector Count: "+str(sectorcount))
+            # While the height of the galaxy is less than the maximum height.
+            while ydiametercount < diameter:
+                # While the width of the galaxy is less than the maximum width.
+                while xdiametercount < diameter:
+                    #print("Coordinates: "+str(x)+","+str(y))
+                    # Stars
+                    rand = random.randrange(0, 100)
+                    # The random numbers lands within the percentage.
+                    if int(stars) <= rand:
+                        # Randomly pick the number of stars in this sector.
+                        systemstars = random.randrange(1, 8)
+                        starcount = starcount + systemstars
+                        starcounter = 0
+                        while starcounter < systemstars:
+                            # Randomly pick the class
+                            scid = random.choice(starclass)
+                            # Insert into database. Get the sid of the star.
+                            connection = db.stdb()
+                            query = "INSERT INTO `stars` (`x`, `y`, `starname`, `scid`) VALUES ('"+str(
+                                x)+"','"+str(y)+"','','"+str(scid)+"')"
+                            cursor = connection.cursor(dictionary=True)
+                            try:
+                                cursor.execute(query)
+                                # print("Query run successfully")
+                                result = cursor.fetchall()
+                            except Error as e:
+                                # print(f"The error '{e}' occurred")
+                                result = "FALSE"
+                            connection.commit()
+                            sid = cursor.lastrowid
+                            connection.close()
+                            starcounter = starcounter + 1
+                            rand = random.randrange(0, 100)
+                            if int(planets) <= rand:
+                                # For each star, create a random number of planets up to 10.
+                                starplanets = random.randrange(1, 10)
+                                planetcount = planetcount + starplanets
+                                planetcounter = 0
+                                while planetcounter < starplanets:
+                                    pcid = random.choice(planetclass)
+                                    connection = db.stdb()
+                                    if connection != "FALSE":
+                                        query = "INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`) VALUES ('"+str(
+                                            x)+"','"+str(y)+"','"+str(sid)+"','"+str(pcid)+"')"
+                                        db.query(connection, query)
+                                    else:
+                                        print("THE CONNECTION HAS FAILED.")
+                                    planetcounter = planetcounter + 1
 
-        # * SUMMARY
+                        #print("There is "+str(systemstars)+" star in this sector.")
+                    else:  # There is no star.
+                        # Calculate the odds of a rogue planet. Let's say 5%
+                        rand = random.randrange(0, 100)
+                        if 5 <= rand:
+                            # Create and save rogue planet.
+                            planetcount = planetcount + 1
+                            connection = db.stdb()
+                            query = "INSERT INTO `planets` (`x`, `y`, `pcid`) VALUES ('"+str(
+                                x)+"','"+str(y)+"','8')"
+                            db.query(connection, query)
+
+                    # Coordinate cleanup
+                    x = x+1
+                    xdiametercount = xdiametercount+1
+                    # Increase the sector count.
+                    sectorcount = sectorcount + 1
+                    #print("Sector count:"+str(sectorcount))
+                    #print("Total Sectors:"+str(totalsectors))
+                    totalobjs = sectorcount+starcount+planetcount
+                    f = open("bigbangstats.txt", "w")
+                    f.write("Sector Number: "+str(sectorcount)+"\nStar Count: " +
+                            str(starcount)+"\nPlanet Count: "+str(planetcount)+"\nSum: "+str(totalobjs))
+                    f.close()
+                    if sectorcount == 1:
+                        print("")
+                        art.cd(
+                            4, '', "Beginning galaxy creation. Depending on the number of sectors, this could take some time.", "reset", True)
+                    elif sectorcount == int(totalsectors*0.1):
+                        art.cd(22, '', "10% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.2):
+                        art.cd(23, '', "20% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.3):
+                        art.cd(24, '', "30% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.4):
+                        art.cd(25, '', "40% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.5):
+                        art.cd(26, '', "50% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.6):
+                        art.cd(27, '', "60% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.7):
+                        art.cd(28, '', "70% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.8):
+                        art.cd(29, '', "80% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors*0.9):
+                        art.cd(30, '', "90% completed...", "reset", True)
+                    elif sectorcount == int(totalsectors):
+                        art.cd(31, '', "100% completed...", "reset", True)
+
+                x = radius*-1  # Bring this all the way back to the left.
+                y = y-1  # Work your way down the y-axis
+                xdiametercount = 0
+                ydiametercount = ydiametercount+1
+
         art.cd(226, '', str(sectorcount), "reset", False)
         art.cd(2, '', " sectors created.", "reset", True)
         art.cd(226, '', str(starcount), "reset", False)
@@ -295,7 +241,6 @@ def bb_main_menu():
         art.cd(2, '', " planets created.", "reset", True)
         print("")
         art.cd(4, '', "Enjoy exploring the galaxy!", "reset", True)
-        bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
 
     def bigdark():
         # Clear the Stars Table
@@ -312,16 +257,15 @@ def bb_main_menu():
         print("")
         art.cd(4, '', "The galaxy has been destroyed. I really hope our galaxy isn't a simulation too.", "reset", True)
         print("")
-        bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
+        bbmenu(sectors, stars, planets, civilizations, empires)
 
     # Define default galaxy generation setting values
-    sectors = 1000
-    roguechance = 2
+    sectors = 100
     stars = 50
     planets = 50
     civilizations = 10
     empires = 3
-    bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
+    bbmenu(sectors, stars, planets, civilizations, empires)
     command = ""
     while command != "q":
         art.cd('light_cyan', '', "Design the galaxy ", 'reset', False)
@@ -332,31 +276,26 @@ def bb_main_menu():
             case '1':
                 sectors = input("How many sectors exist in the galaxy? ")
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case '2':
                 stars = input(
                     "What chance is there of a star forming in a sector? ")
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case '3':
                 planets = input(
                     "What chance is there that there will be planets around a star? ")
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case '4':
                 civilizations = input(
                     "How many civilizations should be created? ")
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case '5':
                 empires = input("How many empires should be created? ")
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case ('c' | 'C'):
                 connection = db.stdb()
                 query = "select * from `stars` LIMIT 1"
@@ -364,13 +303,11 @@ def bb_main_menu():
                 if results != 0:
                     bigdark()
                 else:
-                    bigbang(sectors, roguechance, stars,
-                            planets, civilizations, empires)
+                    bigbang(sectors, stars, planets, civilizations, empires)
                 print("")
             case ('?' | ''):
                 print("")
-                bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                bbmenu(sectors, stars, planets, civilizations, empires)
             case ('q' | 'Q'):
                 pass
             case _:
