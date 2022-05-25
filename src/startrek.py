@@ -5,6 +5,7 @@ import mysql.connector
 from mysql.connector import Error
 from modules import db
 from modules import art
+from classes import intro
 
 # Check to see if the 'startrek' database exists.
 connection = db.stdb()
@@ -19,4 +20,5 @@ if connection == "FALSE":
 
 
 # Show a random intro screen.
-print("Hello world!")
+# print("Hello world!")
+intro.mainscreen()

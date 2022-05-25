@@ -7,11 +7,9 @@ from modules import db
 from modules import art
 
 # TODO
-# * Validate inputs. Right now you can enter anything into the Big Bang options.
-# * Use a percentage to figure out if a planet will be inhabited.
+# * Right now planets are inhabited randomly, no matter the class. Focus on specific planet classes (Class M, etc) that are more likely to support life.
 # * Add an algorithm for nebulas that may impact sensor performance.
 # * Create black holes.
-# * Add civilizations: these are the lifeforms that live on a planet.
 # * Add empires: there are the organizations that rule over planets.
 
 
@@ -78,8 +76,10 @@ def bb_main_menu():
             art.cd(5, '', "\t<", "", False)
             art.cd('light_cyan', '', "5", "", False)
             art.cd(5, '', "> ", "", False)
-            art.cd(2, '', "How many civilizations should be created? ", "", False)
-            art.cd(226, '', str(civilizations), "", True)
+            art.cd(
+                2, '', "What chance is there of a planet being inhabited? ", "", False)
+            art.cd(226, '', str(civilizations), "", False)
+            art.cd(226, '', "%", "", True)
 
             # Row 6
             art.cd(5, '', "\t<", "", False)
@@ -125,10 +125,12 @@ def bb_main_menu():
         ydiametercount = 0  # Current Y coordinate pointer
         starcount = 0  # Total number of stars created in the galaxy
         planetcount = 0  # Total number of planets created in the galaxy
-        allstars = []  # The star data for the executemany SQL function
-        planetswithstars = []  # planet The data for the executemany SQL function
+        civcounter = 0  # Total number of civilizations created in the galaxy
         rogueplanets = []  # The rogue planet data for the executemany SQL function
-        totaljobs = 4
+        allstars = []  # The star data for the executemany SQL function
+        planetswithstars = []  # The planet data for the executemany SQL function
+        civilizationdata = []  # The data for the executemany SQL function
+        totaljobs = 5
 
         # Get the star types from the database and store them in a list.
         starclass = []
@@ -272,17 +274,44 @@ def bb_main_menu():
                 planetcounter = 0
                 while planetcounter < starplanets:
                     pcid = random.choice(planetclass)
-                    temp = (row["x"], row["y"], row["sid"], pcid)
+                    # * Determine if there will be a civilization on this planet.
+                    rand = random.randrange(0, 100)
+                    if rand <= civilizations:
+                        civcounter = civcounter + 1
+                        cid = civcounter
+                        civname = "CIV"+str(cid)
+                        temp = (row["x"], row["y"], civname)
+                        civilizationdata.append(temp)
+                    else:
+                        cid = 0
+
+                    temp = (row["x"], row["y"], row["sid"], pcid, cid)
                     planetswithstars.append(temp)
                     planetcounter = planetcounter + 1
 
         # Save the planets to the database.
         connection = db.stdb()
-        query = "INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`) VALUES (%s, %s, %s, %s)"
+        query = "INSERT INTO `planets` (`x`, `y`, `sid`, `pcid`, `cid`) VALUES (%s, %s, %s, %s, %s)"
         db.querymany(connection, query, planetswithstars)
 
         # Task completed text.
         art.cd(15, '', "\t\t\t\t\t\t[ ", "reset", False)
+        art.cd(46, '', "DONE", "reset", False)
+        art.cd(15, '', " ]", "reset", True)
+
+        # Display task text.
+        text = "(5/"+str(totaljobs) + \
+            ") Creating Life..."
+        art.cd(
+            26, '', text, "reset", False)
+
+        # Save the civilizations to the database.
+        connection = db.stdb()
+        query = "INSERT INTO `civilizations` (`x`, `y`, `civname`) VALUES (%s, %s, %s)"
+        db.querymany(connection, query, civilizationdata)
+
+        # Task completed text.
+        art.cd(15, '', "\t\t\t\t\t\t\t\t[ ", "reset", False)
         art.cd(46, '', "DONE", "reset", False)
         art.cd(15, '', " ]", "reset", True)
 
@@ -293,6 +322,8 @@ def bb_main_menu():
         art.cd(2, '', " stars created.", "reset", True)
         art.cd(226, '', str(planetcount), "reset", False)
         art.cd(2, '', " planets created.", "reset", True)
+        art.cd(226, '', str(civcounter), "reset", False)
+        art.cd(2, '', " civilizations created.", "reset", True)
         print("")
         art.cd(4, '', "Enjoy exploring the galaxy!", "reset", True)
         bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
@@ -306,11 +337,15 @@ def bb_main_menu():
         connection = db.stdb()
         query = "TRUNCATE `planets`"
         db.query(connection, query)
-        daletegalaxy = False
+        # Clear the Civilizations Table
+        connection = db.stdb()
+        query = "TRUNCATE `civilizations`"
+        db.query(connection, query)
+
         art.cd(23, '', "Once teeming with life, all the planets in the galaxy are no more. There shall never again be thought, love, or beauty experienced by anyone.", "reset", True)
         art.cd(22, '', "All the stars have been destroyed and the galaxy descends into darkness. Perhaps it is a blessing that there was no one around to see it.", "reset", True)
         print("")
-        art.cd(4, '', "The galaxy has been destroyed. I really hope our galaxy isn't a simulation too.", "reset", True)
+        art.cd(4, '', "The galaxy has been destroyed. I really hope your galaxy isn't a simulation too.", "reset", True)
         print("")
         bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
 
@@ -330,31 +365,54 @@ def bb_main_menu():
         command = input("")
         match command:
             case '1':
-                sectors = input("How many sectors exist in the galaxy? ")
-                print("")
+                sectors = ""
+                while sectors.isdigit() == False:
+                    print("")
+                    sectors = input(
+                        "How many sectors should exist in the galaxy? ")
+
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, empires)
             case '2':
-                stars = input(
-                    "What chance is there of a star forming in a sector? ")
-                print("")
+                roguechance = ""
+                while roguechance.isdigit() == False:
+                    print("")
+                    roguechance = input(
+                        "What chance is there of an empty sector having a rogue planet? ")
+
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, empires)
             case '3':
-                planets = input(
-                    "What chance is there that there will be planets around a star? ")
-                print("")
+                stars = ""
+                while stars.isdigit() == False:
+                    print("")
+                    stars = input(
+                        "What chance is there of a star forming in a sector? ")
+
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, empires)
             case '4':
-                civilizations = input(
-                    "How many civilizations should be created? ")
-                print("")
+                planets = ""
+                while planets.isdigit() == False:
+                    print("")
+                    planets = input(
+                        "What chance is there that there will be planets around a star? ")
+
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, empires)
             case '5':
-                empires = input("How many empires should be created? ")
-                print("")
+                civilizations = ""
+                while civilizations.isdigit() == False:
+                    print("")
+                    civilizations = input(
+                        "What chance is there of a planet being inhabited? ")
+                bbmenu(sectors, roguechance, stars,
+                       planets, civilizations, empires)
+            case '6':
+                empires = ""
+                while empires.isdigit() == False:
+                    print("")
+                    empires = input("How many empires should be created? ")
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, empires)
             case ('c' | 'C'):
