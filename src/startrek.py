@@ -3,6 +3,9 @@
 # Import the required modules.
 import mysql.connector
 from mysql.connector import Error
+from classes import playerClass
+from classes import log
+from classes import menus
 from modules import db
 from modules import art
 from classes import intro
@@ -22,3 +25,5 @@ if connection == "FALSE":
 # Show a random intro screen.
 # print("Hello world!")
 intro.mainscreen()
+player = playerClass.player()
+player.playerCheck()

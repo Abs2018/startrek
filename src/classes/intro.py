@@ -1,7 +1,5 @@
 from modules import art
 import random
-import sys
-from unicodedata import name
 
 '''
     Characters from https://en.wikipedia.org/wiki/Code_page_437
