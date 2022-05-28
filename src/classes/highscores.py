@@ -16,7 +16,6 @@ class highScores():
         print("")
         connection = db.stdb()
         query = "select * from `highscores`"
-
         highscorecount = db.query(connection, query)
         if highscorecount == 0:
             # Display empty table message.

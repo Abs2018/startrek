@@ -8,6 +8,7 @@ from classes import menus
 import mysql.connector
 from mysql.connector import Error
 from classes import playerClass
+player = playerClass.player()
 from classes import log
 log = log.log()
 menu = menus.menus()
@@ -28,7 +29,7 @@ if connection == "FALSE":
 # print("Hello world!")
 intro.mainscreen()
 menu.gameStart()
-# player = playerClass.player()
+player.check()
 # player.playerCheck()
 
 # log.logShow()
