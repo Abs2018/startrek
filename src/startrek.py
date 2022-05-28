@@ -1,14 +1,16 @@
 # This is the game controller script.
 
 # Import the required modules.
+from classes import intro
+from modules import art
+from modules import db
+from classes import menus
 import mysql.connector
 from mysql.connector import Error
 from classes import playerClass
 from classes import log
-from classes import menus
-from modules import db
-from modules import art
-from classes import intro
+log = log.log()
+menu = menus.menus()
 
 # Check to see if the 'startrek' database exists.
 connection = db.stdb()
@@ -25,8 +27,8 @@ if connection == "FALSE":
 # Show a random intro screen.
 # print("Hello world!")
 intro.mainscreen()
-menu = menus.menus()
 menu.gameStart()
+# player = playerClass.player()
+# player.playerCheck()
 
-#player = playerClass.player()
-#player.playerCheck()
+# log.logShow()
