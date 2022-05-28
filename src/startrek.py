@@ -25,5 +25,8 @@ if connection == "FALSE":
 # Show a random intro screen.
 # print("Hello world!")
 intro.mainscreen()
-player = playerClass.player()
-player.playerCheck()
+menu = menus.menus()
+menu.gameStart()
+
+#player = playerClass.player()
+#player.playerCheck()
