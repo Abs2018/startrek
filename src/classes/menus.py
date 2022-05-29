@@ -54,5 +54,5 @@ class menus():
                 case ('?' | ''):
                     displaymain()
 
-    def PlayerSetup():
+    def eventHandler():
         pass

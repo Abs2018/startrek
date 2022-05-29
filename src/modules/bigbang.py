@@ -11,6 +11,8 @@ from modules import art
 # * Add an algorithm for nebulas that may impact sensor performance.
 # * Create black holes.
 # * Add empires: there are the organizations that rule over planets.
+# * Create ports.
+# * Add predefined Federation empire.
 
 
 def bb_main_menu():
@@ -340,6 +342,14 @@ def bb_main_menu():
         # Clear the Civilizations Table
         connection = db.stdb()
         query = "TRUNCATE `civilizations`"
+        db.query(connection, query)
+        # Clear the Players Table
+        connection = db.stdb()
+        query = "TRUNCATE `players`"
+        db.query(connection, query)
+        # Clear the Logs Table
+        connection = db.stdb()
+        query = "TRUNCATE `logs`"
         db.query(connection, query)
 
         art.cd(23, '', "Once teeming with life, all the planets in the galaxy are no more. There shall never again be thought, love, or beauty experienced by anyone.", "reset", True)

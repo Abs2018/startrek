@@ -1,10 +1,16 @@
-from subprocess import call
+from dataclasses import dataclass
 import mysql.connector
 from mysql.connector import Error
 from modules import db
 from modules import art
+from classes import log
+log = log.log()
+
+# TODO:
+# * Check to make sure that the user's first name is not 'q'
 
 
+@dataclass
 class player():
     def __init__(self):
         pass
@@ -38,14 +44,25 @@ class player():
             command = input("")
             if command == "y" or command == "Y" or command == "":
                 player.create(callsign)
+                # Get the PID
+                connection = db.stdb()
+                query = "select * from `players` where `callsign` = '"+callsign+"'"
+                results = db.query(connection, query)
+                for row in results:
+                    pid = row['pid']
             elif command == "N" or command == "n":
                 print("")
                 art.cd(2, '', "Maybe next time...", 0, True)
                 print("")
                 quit()
         else:
-            # Load player information
-            print("We found you.")
+            # Get the PID
+            connection = db.stdb()
+            query = "select * from `players` where `callsign` = '"+callsign+"'"
+            results = db.query(connection, query)
+            for row in results:
+                pid = row['pid']
+        return pid
 
     def create(callsign):
         # Create the player.
@@ -106,14 +123,26 @@ class player():
         birthday = "24/04"
         homeplanet = "Earth"
         languages = "English"
-
+        # Create the player
         connection = db.stdb()
         query = "INSERT INTO `players` (`callsign`, `fname`, `mname`, `lname`, `alignment`, `rank`, `branch`, `xp`, `kills`, `deaths`, `locationx`, `locationy`, `whereami`, `health`, `species`, `age`, `birthday`, `homeplanet`, `languages`) VALUES ('"+str(callsign)+"', '"+str(fname)+"', '"+str(mname)+"', '"+str(
             lname)+"', '"+str(alignment)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
         db.query(connection, query)
+        # Log the event
+        connection = db.stdb()
+        logtype = "NEWPLAYER"
+        logevent = fname + " " + lname + " joined the " + alignment + "!"
+        log.logAdd(logtype, logevent)
 
-    def load(callsign):
+    def whereiam(pid, destination):
         pass
 
-    def changexp(callsign, xp):
+    def changelocation(pid, x, y):
+        pass
+
+    def changerank(pid):
+        pass
+
+    def changexp(pid, xp):
+        # playerClass.changerank(pid)
         pass
