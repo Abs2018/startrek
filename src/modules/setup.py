@@ -172,3 +172,56 @@ def setup():
     db.query(connection, query)
 
     art.cd(29, '', "Starting the historic record.", "reset", True)
+
+    # Create Port Classes Table
+    connection = db.stdb()
+    query = "CREATE TABLE `portclass` (`pcid` int(8) NOT NULL, `portclass` varchar(8) NOT NULL, `colour` varchar(7) NOT NULL)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `portclass` ADD PRIMARY KEY (`pcid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `portclass` MODIFY `pcid` int(8) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    starclasses = [('1', 'O', '#9bb0ff'), ('2', 'B', '#aabfff'), ('3', 'A', '#cad7ff'),
+                   ('4', 'F', '#f8f7ff'), ('5', 'G', '#fff4ea'), ('6', 'K', '#ffd2a1'), ('7', 'M', '#ffcc6f')]
+
+    query = "INSERT INTO `starclass` (`scid`, `starclass`, `colour`) VALUES (%s, %s, %s)"
+    db.querymany(connection, query, starclasses)
+
+    # Create the Ports table
+    connection = db.stdb()
+    query = "CREATE TABLE `ports` (`portid` int(128) NOT NULL, `portclass` int(8) NOT NULL, `portname` varchar(128) NOT NULL, `locationx` int(16) NOT NULL, `locationy` int(16) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ports` ADD PRIMARY KEY (`portid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ports` MODIFY `portid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    # Create the stardock
+    connection = db.stdb()
+    query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`) VALUES (0, 'Stardock', 0, 0)"
+    db.query(connection, query)
+
+    # Last Time Docked
+    connection = db.stdb()
+    query = "CREATE TABLE `lastdockedatport` (`ldapid` int(128) NOT NULL, `portid` int(8), `pid` int(8) NOT NULL, `lastdockeddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `lastdockedatport` ADD PRIMARY KEY (`ldapid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `lastdockedatport` MODIFY `ldapid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    art.cd(30, '', "Placing safe harbours throughout the galaxy.", "reset", True)
