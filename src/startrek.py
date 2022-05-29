@@ -1,6 +1,7 @@
 # This is the game controller script.
 
 # Import the required modules.
+from classes import log
 from classes import intro
 from modules import art
 from modules import db
@@ -9,7 +10,6 @@ import mysql.connector
 from mysql.connector import Error
 from classes import playerClass
 player = playerClass.player()
-from classes import log
 log = log.log()
 menu = menus.menus()
 
@@ -26,10 +26,10 @@ if connection == "FALSE":
 
 
 # Show a random intro screen.
-# print("Hello world!")
 intro.mainscreen()
+# Show the starting menu (high scores, etc)
 menu.gameStart()
+# Check to see if the player is in the database. If so, instantiate the player.
 player.check()
-# player.playerCheck()
 
 # log.logShow()
