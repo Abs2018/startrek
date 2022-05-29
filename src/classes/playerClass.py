@@ -134,15 +134,110 @@ class player():
         logevent = fname + " " + lname + " joined the " + alignment + "!"
         log.logAdd(logtype, logevent)
 
-    def whereiam(pid, destination):
-        pass
+    def changecallsign(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Callsign:", 0, False)
+            callsign = input(" ")
+            if callsign:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `callsign`='" + \
+            callsign+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return callsign
 
-    def changelocation(pid, x, y):
+    def changefname(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New First Name:", 0, False)
+            fname = input(" ")
+            if fname:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `fname`='" + \
+            fname+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return fname
+
+    def changemname(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Middle Name:", 0, False)
+            mname = input(" ")
+            if mname:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `mname`='" + \
+            mname+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return mname
+
+    def changelname(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Last Name:", 0, False)
+            lname = input(" ")
+            if lname:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `lname`='" + \
+            lname+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return lname
+
+    def changealignment(pid):
         pass
 
     def changerank(pid):
         pass
 
+    def changebranch(pid):
+        pass
+
     def changexp(pid, xp):
         # playerClass.changerank(pid)
+        pass
+
+    def changekills(pid):
+        pass
+
+    def changedeaths(pid):
+        pass
+
+    # This changes the X coordinate from the user editor.
+    def changelocationx(pid, x):
+        pass
+
+    # This changes the y coordinate from the user editor.
+    def changelocationy(pid, y):
+        pass
+
+    def changewhereami(pid, destination):
+        pass
+
+    def changehealth(pid, health):
+        pass
+
+    def changespecies(pid):
+        pass
+
+    def changeage(pid):
+        pass
+
+    def changebirthday(pid):
+        pass
+
+    def changehomeplanet(pid):
+        pass
+
+    def changelanguage(pid):
+        pass
+
+    # This changes the coordinate of the user and the ship in the game.
+    def move(pid, x, y):
         pass

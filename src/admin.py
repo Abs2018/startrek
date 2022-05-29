@@ -7,6 +7,8 @@ from modules import db
 from modules import art
 from modules import setup
 from modules import bigbang as bb
+from classes import playerClass
+playerClass = playerClass.player()
 
 
 # import cgi
@@ -127,25 +129,233 @@ def user_menu():
                 connection = db.stdb()
                 query = "select * from `players` where `pid`='"+command+"'"
                 results = db.query(connection, query)
-
-                if results != 'FALSE':
-                    art.cd(226, '', "\t\t\tUSER INFORMATION", "", True)
+                if results:
                     for row in results:
-                        art.cd(5, '', "<", "", False)
-                        art.cd('light_cyan', '', "F", "", False)
-                        art.cd(5, '', "> ", "", False)
-                        art.cd('light_cyan', '', "First Name:\t", "", False)
-                        art.cd(2, '', row['fname'], "", True)
+                        pid = row['pid']
+                        callsign = row['callsign']
+                        fname = row['fname']
+                        mname = row['mname']
+                        lname = row['lname']
+                        alignment = row['alignment']
+                        rank = row['rank']
+                        branch = row['branch']
+                        xp = row['xp']
+                        kills = row['kills']
+                        deaths = row['deaths']
+                        locationx = row['locationx']
+                        locationy = row['locationy']
+                        whereami = row['whereami']
+                        health = row['health']
+                        species = row['species']
+                        age = row['age']
+                        birthday = row['birthday']
+                        homeplanet = row['homeplanet']
+                        languages = row['languages']
 
-                    print("")
-                    art.cd(5, '', "[User Editor] ", '', False)
-                    art.cd('light_cyan', '',
-                           "Which attribute would you like to edit? ", 0, False)
-                    art.cd(226, '', "[?]", '', False)
-                    art.cd('light_cyan', '', ": ", 0, False)
-                    command = input("")
+                    usercommand = ""
+                    while usercommand != "q" or usercommand != "Q":
+                        match usercommand:
+                            case ('c' | 'C'):
+                                callsign = playerClass.changecallsign(pid)
+                            case ('f' | 'F'):
+                                fname = playerClass.changefname(pid)
+                            case ('m' | 'M'):
+                                mname = playerClass.changemname(pid)
+                            case ('l' | 'L'):
+                                lname = playerClass.changelname(pid)
+                            case ('a' | 'A'):
+                                alignment = playerClass.changealignment(pid)
+                            case ('r' | 'R'):
+                                rank = playerClass.changerank(pid)
+                            case ('b' | 'B'):
+                                branch = playerClass.changebranch(pid)
+                            case ('e' | 'E'):
+                                xp = playerClass.changexp(pid, xp)
+                            case ('k' | 'K'):
+                                kills = playerClass.changekills(pid)
+                            case ('d' | 'D'):
+                                deaths = playerClass.changedeaths(pid)
+                            case ('x' | 'X'):
+                                locationx = playerClass.changelocationx(
+                                    pid, locationx)
+                            case ('y' | 'Y'):
+                                locationy = playerClass.changelocationy(
+                                    pid, locationy)
+                            case ('w' | 'W'):
+                                whereami = playerClass.changewhereami(
+                                    pid, whereami)
+                            case ('h' | 'H'):
+                                health = playerClass.changehealth(pid, health)
+                            case ('s' | 'S'):
+                                species = playerClass.changespecies(pid)
+                            case ('g' | 'G'):
+                                age = playerClass.changeage(pid)
+                            case ('i' | 'I'):
+                                birthday = playerClass.changebirthday(pid)
+                            case ('p' | 'P'):
+                                homeplanet = playerClass.changehomeplanet(pid)
+                            case ('n' | 'N'):
+                                languages = playerClass.changelanguage(pid)
+                            case ('q' | 'Q'):
+                                adm_main_menu()
+                            case ('?' | ''):
+                                print("")
+                                art.cd(
+                                    226, '', "\t\t\tEDIT USER INFORMATION", "", True)
+                                print("")
+                                # Call Sign
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "C", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Callsign:\t\t", "", False)
+                                art.cd(2, '', callsign, "", True)
+                                # First Name
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "F", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "First Name:\t\t", "", False)
+                                art.cd(2, '', fname, "", True)
+                                # Middle Name
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "M", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Middle Name:\t", "", False)
+                                art.cd(2, '', mname, "", True)
+                                # Last Name
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "L", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Last Name:\t\t", "", False)
+                                art.cd(2, '', lname, "", True)
+                                # Alignment
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "A", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Alignment:\t\t", "", False)
+                                art.cd(2, '', alignment, "", True)
+                                # Rank
+                                #! Do we need Rank? Can't we just calculate it from XP?
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "R", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Rank:\t\t", "", False)
+                                art.cd(2, '', str(rank), "", True)
+                                # Branch
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "B", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Branch:\t\t", "", False)
+                                art.cd(2, '', branch, "", True)
+                                # Experience (XP)
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "E", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Experience:\t\t", "", False)
+                                art.cd(2, '', str(xp), "", True)
+                                # Kills
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "K", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Kills:\t\t", "", False)
+                                art.cd(2, '', str(kills), "", True)
+                                # Deaths
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "D", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Deaths:\t\t", "", False)
+                                art.cd(2, '', str(deaths), "", True)
+                                # Location X
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "X", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "X Coordinate:\t", "", False)
+                                art.cd(2, '', str(locationx), "", True)
+                                # Location Y
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "Y", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Y Coordinate:\t", "", False)
+                                art.cd(2, '', str(locationy), "", True)
+                                # Where Am I?
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "W", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Where Am I?:\t", "", False)
+                                art.cd(2, '', str(whereami), "", True)
+                                # Health
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "H", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Health:\t\t", "", False)
+                                art.cd(2, '', str(health), "", True)
+                                # Species
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "S", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Species:\t\t", "", False)
+                                art.cd(2, '', str(species), "", True)
+                                # Age
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "G", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Age:\t\t", "", False)
+                                art.cd(2, '', str(age), "", True)
+                                # Birthday
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "I", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Birthday:\t\t", "", False)
+                                art.cd(2, '', str(birthday), "", True)
+                                # Home Planet
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "P", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Home Planet:\t", "", False)
+                                art.cd(2, '', str(homeplanet), "", True)
+                                # Language
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "N", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Language:\t\t", "", False)
+                                art.cd(2, '', str(languages), "", True)
+                                print()
+                                art.cd(5, '', "<", "", False)
+                                art.cd('226', '', "Q", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd(2, '', "Quit User Editor", "", True)
+                                print()
+                            case _:
+                                print("")
+                                art.cd(
+                                    1, '', "Command not found. Please try again.", 0, True)
+                                print("")
 
-                    #! KEEP WORKING ON THE USER EDITOR IN THE MORNING.
+                        print("")
+                        art.cd(5, '', "[User Editor] ", '', False)
+                        art.cd('light_cyan', '',
+                               "Which attribute would you like to edit? ", 0, False)
+                        art.cd(226, '', "[?]", '', False)
+                        art.cd('light_cyan', '', ": ", 0, False)
+                        usercommand = input("")
 
                 else:
                     print("")
