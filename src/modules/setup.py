@@ -174,8 +174,13 @@ def setup():
     art.cd(29, '', "Starting the historic record.", "reset", True)
 
     # Create Port Classes Table
+    '''
+    Port classes are a function of size, not what they trade in.
+    The first 3 classes (0,1,2) will offer shipyard services, the number of services reducing the lower the class goes.
+
+    '''
     connection = db.stdb()
-    query = "CREATE TABLE `portclass` (`pcid` int(8) NOT NULL, `portclass` varchar(8) NOT NULL, `colour` varchar(7) NOT NULL)"
+    query = "CREATE TABLE `portclass` (`pcid` int(8) NOT NULL, `portclass` varchar(8) NOT NULL, `orecap` varchar(7) NOT NULL, `organicscap` varchar(7) NOT NULL, `equipmentcap` varchar(7) NOT NULL, `theater` int(1) NOT NULL, `bank` int(1) NOT NULL, `techdealer` int(1) NOT NULL, `police` int(1) NOT NULL, `shipyards` int(1) NOT NULL, `bar` int(1) NOT NULL, `library` int(1) NOT NULL, `blackmarket` int(1) NOT NULL, `description` varchar(1024) NOT NULL)"
     db.query(connection, query)
 
     connection = db.stdb()
@@ -186,16 +191,19 @@ def setup():
     query = "ALTER TABLE `portclass` MODIFY `pcid` int(8) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
+    '''
+    class, orecap, organicscap, equipmentcap, theater, bank, techdealer, police, shipyards, bar, library, blackmarket
+    '''
     connection = db.stdb()
-    starclasses = [('1', 'O', '#9bb0ff'), ('2', 'B', '#aabfff'), ('3', 'A', '#cad7ff'),
-                   ('4', 'F', '#f8f7ff'), ('5', 'G', '#fff4ea'), ('6', 'K', '#ffd2a1'), ('7', 'M', '#ffcc6f')]
+    portclasses = [('0', '10000', '10000', '10000', '1', '1', '1', '1', '1', '0', '1', '0', "What never ceases to amaze you is the massive scale of the Class 0 port. There is enough space to house over 15,000 officers and up to 35,000 visitors at any given time. Nearly any service you can think of exists on a Class 0 port. You return your focus to docking your ship, as you don't want to be known as the person who scratched their paint on the station."), ('1', '8500', '8500', '8500', '0', '1', '1', '1', '0', '0', '0', '0', "Class 1 ports serve as major regional hubs in deep space. With large cargo space, they are excellent trade centers for traders looking to make a profit. Most services you can require are found on a Class 1 port."), ('2', '7500', '7500', '7500', '0', '1', '1', '1', '0', '0', '0', '0', "Class 2"),
+                   ('3', '7000', '7000', '7000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 3"), ('4', '6000', '6000', '6000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 4"), ('5', '5000', '5000', '5000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 5"), ('6', '4000', '4000', '4000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 6"), ('7', '3000', '3000', '3000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 7"), ('8', '2000', '2000', '2000', '0', '0', '0', '0', '0', '0', '0', '0', "Class 8"), ('9', '1000', '1000', '1000', '0', '0', '1', '0', '0', '1', '0', '1', "The smallest station type in the galaxy is the Class 9, which can often be found in frontier space or near underdeveloped planets. The distance of these ports from well-regulated space makes them a haven for the...more shadowy citizens of the galaxy.")]
 
-    query = "INSERT INTO `starclass` (`scid`, `starclass`, `colour`) VALUES (%s, %s, %s)"
-    db.querymany(connection, query, starclasses)
+    query = "INSERT INTO `portclass` (`portclass`, `orecap`, `organicscap`, `equipmentcap`, `theater`, `bank`, `techdealer`, `police`, `shipyards`, `bar`, `library`, `blackmarket`, `description`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    db.querymany(connection, query, portclasses)
 
     # Create the Ports table
     connection = db.stdb()
-    query = "CREATE TABLE `ports` (`portid` int(128) NOT NULL, `portclass` int(8) NOT NULL, `portname` varchar(128) NOT NULL, `locationx` int(16) NOT NULL, `locationy` int(16) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+    query = "CREATE TABLE `ports` (`portid` int(128) NOT NULL, `portclass` int(8) NOT NULL, `portname` varchar(128) NOT NULL, `locationx` int(16) NOT NULL, `locationy` int(16) NOT NULL, `orecount` INT(5) NOT NULL, `organicscount` INT(5) NOT NULL, `equipmentcount` INT(5) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
     db.query(connection, query)
 
     connection = db.stdb()
@@ -204,11 +212,6 @@ def setup():
 
     connection = db.stdb()
     query = "ALTER TABLE `ports` MODIFY `portid` int(128) NOT NULL AUTO_INCREMENT;"
-    db.query(connection, query)
-
-    # Create the stardock
-    connection = db.stdb()
-    query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`) VALUES (0, 'Stardock', 0, 0)"
     db.query(connection, query)
 
     # Last Time Docked

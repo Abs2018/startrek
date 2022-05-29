@@ -8,15 +8,17 @@ from modules import art
 
 # TODO
 # * Right now planets are inhabited randomly, no matter the class. Focus on specific planet classes (Class M, etc) that are more likely to support life.
+# * Need to add planet development stage for prime directive bonuses/penalties.
 # * Add an algorithm for nebulas that may impact sensor performance.
 # * Create black holes.
+# * Determine if we want to keep port names on randomly generated trading ports.
 # * Add empires: there are the organizations that rule over planets.
-# * Create ports.
+#     * Create Class 0 ports in the empire. No more than 3 per empire.
 # * Add predefined Federation empire.
 
 
 def bb_main_menu():
-    def bbmenu(sectors, roguechance, stars, planets, civilizations, empires):
+    def bbmenu(sectors, roguechance, stars, planets, civilizations, ports, empires):
         print("")
         art.cd(226, '', "\tTHE BIG BANG", "", True)
         print("")
@@ -87,10 +89,19 @@ def bb_main_menu():
             art.cd(5, '', "\t<", "", False)
             art.cd('light_cyan', '', "6", "", False)
             art.cd(5, '', "> ", "", False)
+            art.cd(
+                2, '', "What chance is there of a port being in the sector? ", "", False)
+            art.cd(226, '', str(ports), "", False)
+            art.cd(226, '', "%", "", True)
+
+            # Row 7
+            art.cd(5, '', "\t<", "", False)
+            art.cd('light_cyan', '', "7", "", False)
+            art.cd(5, '', "> ", "", False)
             art.cd(2, '', "How many empires should be created? ", "", False)
             art.cd(226, '', str(empires), "", True)
 
-            # Row 7
+            # Row 8
             print("")
             art.cd(5, '', "\t<", "", False)
             art.cd('81', '', "C", "", False)
@@ -106,7 +117,7 @@ def bb_main_menu():
             # Footer
             art.cd("", "", "", "reset", True)
 
-    def bigbang(sectors, roguechance, stars, planets, civilizations, empires):
+    def bigbang(sectors, roguechance, stars, planets, civilizations, ports, empires):
         #!!!! Whatever changes you make in the bigbang function, please add the opposite in the bigdark function.
         # Do the math around the sector coordinates. Our galaxies will be a square grid.
 
@@ -128,11 +139,13 @@ def bb_main_menu():
         starcount = 0  # Total number of stars created in the galaxy
         planetcount = 0  # Total number of planets created in the galaxy
         civcounter = 0  # Total number of civilizations created in the galaxy
+        portcounter = 0  # Total number of civilizations created in the galaxy
         rogueplanets = []  # The rogue planet data for the executemany SQL function
         allstars = []  # The star data for the executemany SQL function
         planetswithstars = []  # The planet data for the executemany SQL function
-        civilizationdata = []  # The data for the executemany SQL function
-        totaljobs = 5
+        civilizationdata = []  # The civilization data for the executemany SQL function
+        portdata = []  # The port data for the executemany SQL function
+        totaljobs = 6
 
         # Get the star types from the database and store them in a list.
         starclass = []
@@ -141,6 +154,23 @@ def bb_main_menu():
         results = db.query(connection, query)
         for row in results:
             starclass.append(row["scid"])
+
+        # Get the port types and store them in a list.
+        portclass = []
+        connection = db.stdb()
+        query = "select * from `portclass`"
+        presults = db.query(connection, query)
+        for prow in presults:
+            tempportclass = [prow['portclass'], prow['orecap'],
+                             prow['organicscap'], prow['equipmentcap']]
+            portclass.append(tempportclass)
+        # Remove Class 0 ports from the list. They will be randomly placed during empire creation.
+        portclass.pop(0)
+
+        # * Create the Stardock in sector 0,0
+        connection = db.stdb()
+        query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`, `orecount`, `organicscount`, `equipmentcount`) VALUES (0, 'Stardock 001', 0, 0, 9000, 9000, 9000)"
+        db.query(connection, query)
 
         # * BEGIN GALAXY CREATION
         # Create the sectors using a while loop.
@@ -151,6 +181,7 @@ def bb_main_menu():
                 # While the width of the galaxy is less than the maximum width.
                 while xdiametercount < diameter:
                     # print("Coordinates: "+str(x)+","+str(y))
+
                     # Stars
                     rand = random.randrange(0, 100)
                     # The random numbers lands within the percentage.
@@ -171,6 +202,24 @@ def bb_main_menu():
                             starcounter = starcounter + 1
 
                         # print("There is "+str(systemstars)+" star in this sector.")
+                         # * Determine if there will be a port around this star.
+                        portrand = random.randrange(0, 100)
+                        if int(ports) <= portrand:
+                            # Randomly pick the class
+                            portclassval = random.randrange(0, len(portclass))
+                            portname = "PORT-"+str(x)+"-"+str(y)
+                            locationx = x
+                            locationy = y
+                            portore = random.randrange(
+                                0, int(portclass[portclassval][1]))
+                            portorganics = random.randrange(
+                                0, int(portclass[portclassval][2]))
+                            portequipment = random.randrange(
+                                0, int(portclass[portclassval][3]))
+                            temp = (portclassval, portname, locationx, locationy, portore,
+                                    portorganics, portequipment)
+                            portdata.append(temp)
+                            portcounter = portcounter + 1
                     else:  # There is no star.
                         # Calculate the odds of a rogue planet. Let's say 5%
                         rand = random.randrange(0, 100)
@@ -286,7 +335,6 @@ def bb_main_menu():
                         civilizationdata.append(temp)
                     else:
                         cid = 0
-
                     temp = (row["x"], row["y"], row["sid"], pcid, cid)
                     planetswithstars.append(temp)
                     planetcounter = planetcounter + 1
@@ -317,6 +365,20 @@ def bb_main_menu():
         art.cd(46, '', "DONE", "reset", False)
         art.cd(15, '', " ]", "reset", True)
 
+        # Display task text.
+        text = "(6/"+str(totaljobs) + \
+            ") Building Ports..."
+        art.cd(
+            27, '', text, "reset", False)
+        # Save the ports to the database.
+        connection = db.stdb()
+        query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`, `orecount`, `organicscount`, `equipmentcount`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        db.querymany(connection, query, portdata)
+        # Task completed text.
+        art.cd(15, '', "\t\t\t\t\t\t\t\t[ ", "reset", False)
+        art.cd(46, '', "DONE", "reset", False)
+        art.cd(15, '', " ]", "reset", True)
+
         # * SUMMARY
         art.cd(226, '', str(sectorcount), "reset", False)
         art.cd(2, '', " sectors created.", "reset", True)
@@ -326,9 +388,12 @@ def bb_main_menu():
         art.cd(2, '', " planets created.", "reset", True)
         art.cd(226, '', str(civcounter), "reset", False)
         art.cd(2, '', " civilizations created.", "reset", True)
+        art.cd(226, '', str(portcounter), "reset", False)
+        art.cd(2, '', " ports built.", "reset", True)
         print("")
         art.cd(4, '', "Enjoy exploring the galaxy!", "reset", True)
-        bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
+        bbmenu(sectors, roguechance, stars, planets,
+               civilizations, ports, empires)
 
     def bigdark():
         # Clear the Stars Table
@@ -342,6 +407,10 @@ def bb_main_menu():
         # Clear the Civilizations Table
         connection = db.stdb()
         query = "TRUNCATE `civilizations`"
+        db.query(connection, query)
+        # Clear the Ports Table
+        connection = db.stdb()
+        query = "TRUNCATE `ports`"
         db.query(connection, query)
         # Clear the Players Table
         connection = db.stdb()
@@ -357,7 +426,8 @@ def bb_main_menu():
         print("")
         art.cd(4, '', "The galaxy has been destroyed. I really hope your galaxy isn't a simulation too.", "reset", True)
         print("")
-        bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
+        bbmenu(sectors, roguechance, stars, planets,
+               civilizations, ports, empires)
 
     # Define default galaxy generation setting values
     sectors = 1000
@@ -365,8 +435,9 @@ def bb_main_menu():
     stars = 50
     planets = 50
     civilizations = 10
+    ports = 10
     empires = 3
-    bbmenu(sectors, roguechance, stars, planets, civilizations, empires)
+    bbmenu(sectors, roguechance, stars, planets, civilizations, ports, empires)
     command = ""
     while command != "q":
         art.cd('light_cyan', '', "Design the galaxy ", 'reset', False)
@@ -382,7 +453,7 @@ def bb_main_menu():
                         "How many sectors should exist in the galaxy? ")
 
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case '2':
                 roguechance = ""
                 while roguechance.isdigit() == False:
@@ -391,7 +462,7 @@ def bb_main_menu():
                         "What chance is there of an empty sector having a rogue planet? ")
 
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case '3':
                 stars = ""
                 while stars.isdigit() == False:
@@ -400,7 +471,7 @@ def bb_main_menu():
                         "What chance is there of a star forming in a sector? ")
 
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case '4':
                 planets = ""
                 while planets.isdigit() == False:
@@ -409,7 +480,7 @@ def bb_main_menu():
                         "What chance is there that there will be planets around a star? ")
 
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case '5':
                 civilizations = ""
                 while civilizations.isdigit() == False:
@@ -417,14 +488,22 @@ def bb_main_menu():
                     civilizations = input(
                         "What chance is there of a planet being inhabited? ")
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case '6':
+                ports = ""
+                while ports.isdigit() == False:
+                    print("")
+                    ports = input(
+                        "What chance is there of a pport being in the sector? ")
+                bbmenu(sectors, roguechance, stars,
+                       planets, civilizations, ports, empires)
+            case '7':
                 empires = ""
                 while empires.isdigit() == False:
                     print("")
                     empires = input("How many empires should be created? ")
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case ('c' | 'C'):
                 connection = db.stdb()
                 query = "select * from `stars` LIMIT 1"
@@ -433,12 +512,12 @@ def bb_main_menu():
                     bigdark()
                 else:
                     bigbang(sectors, roguechance, stars,
-                            planets, civilizations, empires)
+                            planets, civilizations, ports, empires)
                 print("")
             case ('?' | ''):
                 print("")
                 bbmenu(sectors, roguechance, stars,
-                       planets, civilizations, empires)
+                       planets, civilizations, ports, empires)
             case ('q' | 'Q'):
                 pass
             case _:
