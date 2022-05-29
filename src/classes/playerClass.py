@@ -127,6 +127,7 @@ class player():
         connection = db.stdb()
         query = "INSERT INTO `players` (`callsign`, `fname`, `mname`, `lname`, `alignment`, `rank`, `branch`, `xp`, `kills`, `deaths`, `locationx`, `locationy`, `whereami`, `health`, `species`, `age`, `birthday`, `homeplanet`, `languages`) VALUES ('"+str(callsign)+"', '"+str(fname)+"', '"+str(mname)+"', '"+str(
             lname)+"', '"+str(alignment)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
+        #print(query)
         db.query(connection, query)
         # Log the event
         connection = db.stdb()
@@ -190,53 +191,218 @@ class player():
         db.query(connection, query)
         return lname
 
-    def changealignment(pid):
-        pass
+    def changealignment(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Alignment:", 0, False)
+            alignment = input(" ")
+            if alignment:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `alignment`='" + \
+            alignment+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return alignment
 
-    def changerank(pid):
-        pass
+    def changerank(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Rank:", 0, False)
+            rank = input(" ")
+            if rank:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `rank`='" + \
+            rank+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return rank
 
-    def changebranch(pid):
-        pass
+    def changebranch(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Branch:", 0, False)
+            branch = input(" ")
+            if branch:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `branch`='" + \
+            branch+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return branch
 
-    def changexp(pid, xp):
-        # playerClass.changerank(pid)
-        pass
+    # Changes the total XP
+    def changexp(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Experience Amount:", 0, False)
+            xp = input(" ")
+            if xp:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `xp`='" + \
+            xp+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return xp
 
-    def changekills(pid):
-        pass
+    def changekills(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Kill Count:", 0, False)
+            kills = input(" ")
+            if kills:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `kills`='" + \
+            kills+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return kills
 
-    def changedeaths(pid):
-        pass
+    def changedeaths(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Death Count:", 0, False)
+            deaths = input(" ")
+            if deaths:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `deaths`='" + \
+            deaths+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return deaths
 
     # This changes the X coordinate from the user editor.
-    def changelocationx(pid, x):
-        pass
+    def changelocationx(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Update X Coordinate:", 0, False)
+            locationx = input(" ")
+            if locationx:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `locationx`='" + \
+            locationx+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return locationx
 
     # This changes the y coordinate from the user editor.
-    def changelocationy(pid, y):
-        pass
+    def changelocationy(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Update Y Coordinate:", 0, False)
+            locationy = input(" ")
+            if locationy:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `locationy`='" + \
+            locationy+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return locationy
 
-    def changewhereami(pid, destination):
-        pass
+    def changewhereami(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Update Where I Am:", 0, False)
+            whereami = input(" ")
+            if whereami:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `whereami`='" + \
+            whereami+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return whereami
 
-    def changehealth(pid, health):
-        pass
+    def changehealth(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Update Health:", 0, False)
+            health = input(" ")
+            if health:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `health`='" + \
+            health+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return health
 
-    def changespecies(pid):
-        pass
+    def changespecies(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Change Species:", 0, False)
+            species = input(" ")
+            if species:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `species`='" + \
+            species+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return species
 
-    def changeage(pid):
-        pass
+    def changeage(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Change Age:", 0, False)
+            age = input(" ")
+            if age:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `age`='" + \
+            age+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return age
 
-    def changebirthday(pid):
-        pass
+    def changebirthday(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Change Birthday:", 0, False)
+            birthday = input(" ")
+            if birthday:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `birthday`='" + \
+            birthday+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return birthday
 
-    def changehomeplanet(pid):
-        pass
+    def changehomeplanet(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Change Home Planet:", 0, False)
+            homeplanet = input(" ")
+            if homeplanet:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `homeplanet`='" + \
+            homeplanet+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return homeplanet
 
-    def changelanguage(pid):
-        pass
+    def changelanguage(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "Change Language:", 0, False)
+            languages = input(" ")
+            if languages:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `languages`='" + \
+            languages+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return languages
 
     # This changes the coordinate of the user and the ship in the game.
     def move(pid, x, y):

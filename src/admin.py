@@ -170,22 +170,20 @@ def user_menu():
                             case ('b' | 'B'):
                                 branch = playerClass.changebranch(pid)
                             case ('e' | 'E'):
-                                xp = playerClass.changexp(pid, xp)
+                                xp = playerClass.changexp(pid)
                             case ('k' | 'K'):
                                 kills = playerClass.changekills(pid)
                             case ('d' | 'D'):
                                 deaths = playerClass.changedeaths(pid)
                             case ('x' | 'X'):
-                                locationx = playerClass.changelocationx(
-                                    pid, locationx)
+                                locationx = playerClass.changelocationx(pid)
                             case ('y' | 'Y'):
-                                locationy = playerClass.changelocationy(
-                                    pid, locationy)
+                                locationy = playerClass.changelocationy(pid)
                             case ('w' | 'W'):
                                 whereami = playerClass.changewhereami(
-                                    pid, whereami)
+                                    pid)
                             case ('h' | 'H'):
-                                health = playerClass.changehealth(pid, health)
+                                health = playerClass.changehealth(pid)
                             case ('s' | 'S'):
                                 species = playerClass.changespecies(pid)
                             case ('g' | 'G'):
