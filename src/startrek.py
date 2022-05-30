@@ -35,4 +35,26 @@ pid = playerClass.check()
 log.logShow()
 # Instantiate Player
 playerinfo = player.player(pid)
-# print("Hello Cadet "+str(playerinfo.lname))
+print("Hello Cadet "+str(playerinfo.locationx))
+command = ""
+# while command != 'q' or command != 'Q':
+# 	menu.eventHandler(playerinfo)
+
+while command != "q" or command != 'Q':
+	match command:
+		case 'q': # Quit the whole game.
+			print("")
+			art.cd(255,4,"Live long and prosper.",0,True)
+			print("")
+			quit()
+		case _:
+			if playerinfo.whereami == "station":
+				
+				if playerinfo.locationx == "0" and playerinfo.locationy == "0":
+					menu.spacedock(playerinfo)
+				else:
+					pass
+			elif playerinfo.whereami == "ship":
+				m.playership(path,slash,player)
+			elif playerinfo.whereami == "planet":
+				pass

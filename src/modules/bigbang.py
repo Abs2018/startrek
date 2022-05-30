@@ -494,7 +494,7 @@ def bb_main_menu():
                 while ports.isdigit() == False:
                     print("")
                     ports = input(
-                        "What chance is there of a pport being in the sector? ")
+                        "What chance is there of a port being in the sector? ")
                 bbmenu(sectors, roguechance, stars,
                        planets, civilizations, ports, empires)
             case '7':

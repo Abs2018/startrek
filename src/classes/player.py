@@ -9,6 +9,7 @@ class player():
         query = "select * from `players` where `pid` = '"+str(pid)+"'"
         results = db.query(connection, query)
         for row in results:
+            self.pid = row['pid']
             self.callsign = row['callsign']
             self.fname = row['fname']
             self.mname = row['mname']
