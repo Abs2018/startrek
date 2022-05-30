@@ -36,7 +36,7 @@ def shipyards():
     #
     cd(27, 0, '│', '', False)
     cd(255, 0, '═╬═╬═╬═╬═╬═╬═╬', '', False)
-    cd(9, 1, '█', '', False)
+    cd(196, 196, '█', '', False)
     cd(244, 0, ".  ", '', False)  # star
     cd(255, 0, ".", '', False)  # star
     cd(244, 0, ". ", '', False)  # star
@@ -50,7 +50,7 @@ def shipyards():
     #
     cd(27, 0, '│', '', False)
     cd(244, 0, '═╬═╬═╬═╬═╬═╬═╬', '', False)
-    cd(9, 1, '█', '', False)
+    cd(1, 1, '█', '', False)
     cd(244, 0, " .  ", '', False)  # star
     cd(4, 0, ". ", '', False)  # star
     cd(244, 0, ".  ", '', False)  # star
@@ -66,7 +66,7 @@ def shipyards():
     #
     cd(27, 0, '│', '', False)
     cd(244, 0, '═╬═╬═╬═╬═╬═╬═╬', '', False)
-    cd(9, 1, '█', '', False)
+    cd(1, 1, '█', '', False)
     cd(244, 0, " .", '', False)  # star
     cd(255, 0, " .", '', False)  # star
     cd(244, 0, " .  .   ", '', False)  # star
@@ -85,7 +85,7 @@ def shipyards():
     cd(255, 27, 'Federation', '', False)
     cd(4, 0, '│', '', False)
     cd(244, 0, '╬', '', False)
-    cd(9, 1, '█', '', False)
+    cd(1, 1, '█', '', False)
     cd(244, 0, " .    .   ", '', False)  # star
     cd(1, 0, ".", '', False)
     cd(255, 0, ". ", '', False)  # star
