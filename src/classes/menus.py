@@ -1,5 +1,8 @@
+import random
 from modules import art
 from classes import playerClass
+from classes import stationClass
+stationClass = stationClass.stationClass()
 
 
 class menus():
@@ -54,99 +57,192 @@ class menus():
                 case ('?' | ''):
                     displaymain()
 
-    def spacedock(self,playerinfo):
-        # This is the spacedock menu.
+    def portmenu(self, portinfo, playerinfo):
+        menus.ports(self, portinfo, playerinfo)
+
+        # if portinfo.portclass == 0:
+        #     menus.spacedock(self, portinfo, playerinfo)
+        # else:
+        #     menus.ports(self, portinfo, playerinfo)
+
+    def ports(self, portinfo, playerinfo):
         command = ""
         while command != "q":
             print("")
-            print (13,'',"<",'',False)
-            art.cd(11,'',"Stardock",'',False)
-            art.cd(13,'',"> Where to? (",'',False)
-            art.cd(11,'',"?=Help",'',False)
-            art.cd(13,'',"): ",'',False)
+            art.cd(13, '', "<", '', False)
+            art.cd(11, '', portinfo.portname, '', False)
+            art.cd(13, '', "> Where to? (", '', False)
+            art.cd(11, '', "?=Help", '', False)
+            art.cd(13, '', "): ", '', False)
+            portattributes = stationClass.portAttributes(portinfo.portclass)
+            # print(portattributes)
             command = input("")
             match command:
-                case "b": # Seedy singles bar
+                case ("b" | "B"):  # Seedy singles bar
+                    if portattributes["bar"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "This is a rather seedy looking single's bar.", 0, True)
+                        art.cd(
+                            10, '', "Are you sure you want to go in there?", 0, True)
+                        command = input("")
+                        if command == "y" or command == "Y":
+                            art.cd(123, '', "You feel rather nervous as you enter this rather seedy establishment. But after a few drinks you begin to carouse with members of the opposite sex and you forget about your surroundings. You emerge from the place a few hours later with a nasty headache and you notice that your account on your VidCreditCard is much lower than when you entered.", 0, True)
+                        # spacedock(player)
+                    else:
+                        print("")
+                        art.cd(9, '', "This port does not have a bar.", 0, True)
+                case ("c" | "C"):  # CinePlex Videon Theaters
+                    if portattributes["theater"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Theaters are closed at the moment.", 0, True)
+                    else:
+                        print("")
+                        art.cd(
+                            9, '', "This port does not have a holotheater.", 0, True)
+                case ("g" | "G"):  # 2nd National Galactic Bank
+                    if portattributes["bank"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Bank is closed at the moment. You suddenly find yourself wishing that you worked banker's hours.", 0, True)
+                    else:
+                        print("")
+                        art.cd(9, '', "This port does not have a bank.", 0, True)
+                case ("h" | "H"):  # Stellar Hardware Emporium
+                    if portattributes["techdealer"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Hardware Emporium hasn't opened yet.", 0, True)
+                    else:
+                        print("")
+                        art.cd(
+                            9, '', "This port does not have a HArdware Emporium.", 0, True)
+                case ("l" | "L"):  # Libram Universitatus
+                    if portattributes["library"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Librum Universtatus is closed for renovations.", 0, True)
+                    else:
+                        print("")
+                        art.cd(9, '', "This port does not have a Library.", 0, True)
+                case ("p" | "P"):  # Federal Space Police HQ
+                    if portattributes["police"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Police turn you away, saying they're too busy for you.", 0, True)
+                    else:
+                        print("")
+                        art.cd(
+                            9, '', "This port does not have a Police Station.", 0, True)
+                case ("s" | "S"):  # Federation Shipyards
+                    if portattributes["shipyards"] == 1:
+                        menus.shipyards(self, portinfo, playerinfo)
+                    else:
+                        print("")
+                        art.cd(
+                            9, '', "This port does not have a shipyard.", 0, True)
+                case ("t" | "T"):  # Lost Trader's Tavern
+                    if portattributes["tavern"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "The Tavern is closed for a private party.", 0, True)
+                    else:
+                        print("")
+                        art.cd(9, '', "This port does not have a Tavern.", 0, True)
+                case ("u" | "U"):  # Underground
+                    if portattributes["blackmarket"] == 1:
+                        print("")
+                        art.cd(
+                            10, '', "A shady doorway looks entirely uninviting. It's probably best to avoid it for now.", 0, True)
+                    else:
+                        print("")
+                        art.cd(
+                            9, '', "With all the security personnel on this station, you are not surprised that you can't find a black market here.", 0, True)
+
+                case ("q" | "Q"):  # Quit the whole game.
                     print("")
-                    print(Fore.GREEN+Style.BRIGHT+"This is a rather seedy looking single's bar.")
-                    print(Fore.GREEN+Style.BRIGHT+"Are you sure you want to go in there?")
-                    command = input("")
-                    if command == "y" or command == "Y":
-                        print(Fore.CYAN+Style.BRIGHT+"You feel rather nervous as you enter this rather seedy establishment. But after a few drinks you begin to carouse with members of the opposite sex and you forget about your surroundings. You emerge from the place a few hours later with a nasty headache and you notice that your account on your VidCreditCard is much lower than when you entered.")
-                    spacedock(player)
-                case 'c': # CinePlex Videon Theaters
+                    art.cd(255, 27, "Live long and prosper.", 0, True)
                     print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Theaters are closed at the moment.")
-                case 'g': # 2nd National Galactic Bank
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Theaters are closed at the moment.")
-                case 'h': # Stellar Hardware Emporium
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Hardware Emporium hasn't opened yet.")
-                case 'l': # Libram Universitatus
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Librum Universtatus is closed for renovations.")
-                case 'p': # Federal Space Police HQ
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Police turn you away, saying they're too busy for you.")
-                case 's': # Federation Shipyards
-                    shipyards(path, slash, player)
-                case 't': # Lost Trader's Tavern
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"The Tavern is closed roe a private party.")
-                case 'u': # Underground
-                    print("")
-                    print(Fore.GREEN+Style.BRIGHT+"A shady doorway looks entirely uninviting. It's probably best to avoid it for now.")
-                case "!": # Stardock help
-                    pass
-                case "r": # Go to your ship
-                    player.whereami = "ship"
-                    p.playersave(path,slash,player.userid,player.firstname,player.middlename,player.lastname,player.alignment,player.rank,player.branch,player.xp,player.kills,player.deaths,player.locationx,player.locationy,player.whereami,player.health,player.species,player.age,player.birthday,player.homeplanet,player.languages)
-                    break
-                case 'q': # Quit the whole game.
-                    print(Fore.WHITE+Back.BLUE+Style.BRIGHT+"Live long and prosper.")
                     quit()
-                case '?': # Help
-                    print(Back.BLACK+Fore.RED+Style.BRIGHT+"<Help>")
+
+                case '?':  # Help
                     print("")
-                    print(Fore.GREEN+Style.BRIGHT+"    Obvious places to go are"+11,'',":")
+                    art.cd(196, 232, "<Help>", 0, True)
                     print("")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"C"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The CinePlex Videon Theaters")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"G"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The 2nd National Galactic Bank")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"H"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The Stellar Hardware Emporium")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"L"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The Libram Universitatus")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"P"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The Federal Space Police HQ")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"S"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The Federation Shipyards")
-                    print(13,''," <"+Fore.GREEN+Style.BRIGHT+"T"+13,'',"> "+Fore.CYAN+Style.BRIGHT+"The Lost Trader's Tavern")
+                    art.cd(10, '', "    Obvious places to go are", 0, False)
+                    art.cd(11, '', ":", '', True)
                     print("")
-                    print(13,''," <"+11,'',"!"+13,'',"> "+11,'',"Stardock Help")
-                    print(13,''," <"+11,'',"R"+13,'',"> "+11,'',"Return to your ship and leave")
+                    if portattributes["theater"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "C", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The CinePlex Videon Theaters", 0, True)
+
+                    if portattributes["bank"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "G", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The 2nd National Galactic Bank", 0, True)
+
+                    if portattributes["techdealer"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "H", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The Stellar Hardware Emporium", 0, True)
+
+                    if portattributes["library"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "L", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The Libram Universitatus", 0, True)
+
+                    if portattributes["police"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "P", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The Federal Space Police HQ", 0, True)
+
+                    if portattributes["shipyards"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "S", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The Federation Shipyards", 0, True)
+
+                    if portattributes["tavern"] == 1:
+                        art.cd(13, '', " <", '', False)
+                        art.cd(10, '', "T", '', False)
+                        art.cd(13, '', "> ", '', False)
+                        art.cd(123, '', "The Lost Trader's Tavern", 0, True)
+
                     print("")
-                    print(13,''," <"+Fore.RED+Style.BRIGHT+"Q"+13,'',"> "+Fore.RED+Style.BRIGHT+"Quit the game")
-                case _: # Approximating what TW2002 does here.
-                    rand = random.randrange(0,100)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "!", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Port Help", 0, True)
+
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "R", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Return to your ship and leave", 0, True)
+                    print("")
+                    art.cd(13, '', " <", '', False)
+                    art.cd(196, '', "Q", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(196, '', "Quit the game", 0, True)
+                case _:  # Approximating what TW2002 does here.
+                    rand = random.randrange(0, 100)
                     if rand < 10:
                         print("")
-                        print(Fore.CYAN+Style.BRIGHT+"As you wander about looking down dark corridors, you hear some noise behind you. You spin around to see who is approaching you, but everything goes dark as you are hit.")
+                        art.cd(123, '', "As you wander about looking down dark corridors, you hear some noise behind you. You spin around to see who is approaching you, but everything goes dark as you are hit.", 0, True)
                         print("")
-                        print(Fore.CYAN+Style.BRIGHT+"You wake up a few hours later and find most of your money gone.")
+                        art.cd(
+                            123, '', "You wake up a few hours later and find most of your money gone.", 0, True)
                         # TO DO: Implement money or whatever disappearing.
 
-                    else :
+                    else:
                         print("")
-                        print(Fore.CYAN+Style.BRIGHT+"You wander about the port but find nothing but locked doors and deadends. You do notice some rather rough looking characters lurking about the place. Maybe its not such a good idea to wander about without knowing where it's safe to go?")
+                        art.cd(123, '', "You wander about the port but find nothing but locked doors and deadends. You do notice some rather rough looking characters lurking about the place. Maybe its not such a good idea to wander about without knowing where it's safe to go?", 0, True)
 
-
-
-
-    # def eventHandler(self, playerinfo):
-    #     match playerinfo.whereami:
-    #         case 'station':
-
-    #             print("You are on a space station.")
-    #             command = input("What would you like to do? ")
-    #         case 'ship':
-    #             print("You are on a space ship.")
-    #             command = input("What would you like to do? ")
-
-
+    def shipyards(self, portinfo, playerinfo):
+        art.shipyards()

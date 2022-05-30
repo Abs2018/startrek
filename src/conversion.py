@@ -1,5 +1,15 @@
 cd -> art.cd
 )				-> , '', False)
+
+
+
+		Black	Red	Green	Yellow	Blue	Purple	Cyan	White
+Dim		0		1	2		3		4		5		6		7
+Normal	8		9	10		11		12		13		14		15
+Bright	232		196	82		226		27		207		123		255
+
+
+
 # White
 'bl', 'bl', 'n' -> 0, 0
 'w', 'bl', 'b' -> 255, 0

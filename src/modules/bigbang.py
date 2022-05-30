@@ -12,6 +12,7 @@ from modules import art
 # * Add an algorithm for nebulas that may impact sensor performance.
 # * Create black holes.
 # * Determine if we want to keep port names on randomly generated trading ports.
+# ! BUG: Despite popping the value of 0, there are many class 0 ports being created.
 # * Add empires: there are the organizations that rule over planets.
 #     * Create Class 0 ports in the empire. No more than 3 per empire.
 # * Add predefined Federation empire.
@@ -171,6 +172,7 @@ def bb_main_menu():
         connection = db.stdb()
         query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`, `orecount`, `organicscount`, `equipmentcount`) VALUES (0, 'Stardock 001', 0, 0, 9000, 9000, 9000)"
         db.query(connection, query)
+        portcounter = portcounter + 1
 
         # * BEGIN GALAXY CREATION
         # Create the sectors using a while loop.
@@ -218,7 +220,8 @@ def bb_main_menu():
                                 0, int(portclass[portclassval][3]))
                             temp = (portclassval, portname, locationx, locationy, portore,
                                     portorganics, portequipment)
-                            portdata.append(temp)
+                            if locationx != 0 and locationy != 0:
+                                portdata.append(temp)
                             portcounter = portcounter + 1
                     else:  # There is no star.
                         # Calculate the odds of a rogue planet. Let's say 5%
@@ -374,6 +377,7 @@ def bb_main_menu():
         connection = db.stdb()
         query = "INSERT INTO `ports` (`portclass`, `portname`, `locationx`, `locationy`, `orecount`, `organicscount`, `equipmentcount`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         db.querymany(connection, query, portdata)
+
         # Task completed text.
         art.cd(15, '', "\t\t\t\t\t\t\t\t[ ", "reset", False)
         art.cd(46, '', "DONE", "reset", False)

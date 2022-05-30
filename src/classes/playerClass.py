@@ -17,7 +17,7 @@ class player():
 
     def check(self):
         # Get the player name.
-        art.cd(5, '', "", '', False)
+        art.cd(13, '', "", '', False)
         callsign = ''
         while True:
             print("")
@@ -127,7 +127,7 @@ class player():
         connection = db.stdb()
         query = "INSERT INTO `players` (`callsign`, `fname`, `mname`, `lname`, `alignment`, `rank`, `branch`, `xp`, `kills`, `deaths`, `locationx`, `locationy`, `whereami`, `health`, `species`, `age`, `birthday`, `homeplanet`, `languages`) VALUES ('"+str(callsign)+"', '"+str(fname)+"', '"+str(mname)+"', '"+str(
             lname)+"', '"+str(alignment)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
-        #print(query)
+        # print(query)
         db.query(connection, query)
         # Log the event
         connection = db.stdb()

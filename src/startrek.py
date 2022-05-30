@@ -1,6 +1,7 @@
 # This is the game controller script.
 
 # Import the required modules.
+from classes import station
 from classes import player
 from classes import log
 from classes import intro
@@ -13,6 +14,7 @@ from classes import playerClass
 playerClass = playerClass.player()
 log = log.log()
 menu = menus.menus()
+
 
 # Check to see if the 'startrek' database exists.
 connection = db.stdb()
@@ -35,26 +37,31 @@ pid = playerClass.check()
 log.logShow()
 # Instantiate Player
 playerinfo = player.player(pid)
-print("Hello Cadet "+str(playerinfo.locationx))
-command = ""
+# print("Hello Cadet "+str(playerinfo.locationx))
 # while command != 'q' or command != 'Q':
 # 	menu.eventHandler(playerinfo)
+command = ""
 
-while command != "q" or command != 'Q':
-	match command:
-		case 'q': # Quit the whole game.
-			print("")
-			art.cd(255,4,"Live long and prosper.",0,True)
-			print("")
-			quit()
-		case _:
-			if playerinfo.whereami == "station":
-				
-				if playerinfo.locationx == "0" and playerinfo.locationy == "0":
-					menu.spacedock(playerinfo)
-				else:
-					pass
-			elif playerinfo.whereami == "ship":
-				m.playership(path,slash,player)
-			elif playerinfo.whereami == "planet":
-				pass
+while True:
+    match command:
+        case 'q':  # Quit the whole game.
+            print("")
+            art.cd(255, 4, "Live long and prosper.", 0, True)
+            print("")
+            quit()
+        case _:
+            if playerinfo.whereami == "station":
+                # Get the dock information using the location.
+                stationinfo = station.station(
+                    playerinfo.locationx, playerinfo.locationy)
+                # print(stationinfo.portname)
+                menu.portmenu(stationinfo, playerinfo)
+
+                # if playerinfo.locationx == 0 and playerinfo.locationy == 0:
+                #     menu.spacedock(playerinfo)
+                # else:
+                #     pass
+            elif playerinfo.whereami == "ship":
+                m.playership(path, slash, player)
+            elif playerinfo.whereami == "planet":
+                pass
