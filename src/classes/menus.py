@@ -138,6 +138,7 @@ class menus():
                 case ("s" | "S"):  # Federation Shipyards
                     if portattributes["shipyards"] == 1:
                         menus.shipyards(self, portinfo, playerinfo)
+
                     else:
                         print("")
                         art.cd(
@@ -246,3 +247,92 @@ class menus():
 
     def shipyards(self, portinfo, playerinfo):
         art.shipyards()
+        command = ""
+        while command != "q" or command != "Q":
+            print("")
+            art.cd(13, '', "<", '', False)
+            art.cd(11, '', "Shipyards", '', False)
+            art.cd(13, '', "> Your option? (", '', False)
+            art.cd(11, '', "?=Help", '', False)
+            art.cd(13, '', "): ", 0, True)
+            command = input("")
+            match command:
+                case ('b' | 'B'):  # Buy a new ship
+                    pass
+                case ('s' | 'S'):  # Sell extra ships
+                    pass
+                case ('e' | 'E'):  # Examine ship specs
+                    art.cd(15, 4, "<Examine Ship Stats>", 0, True)
+                    print("")
+                    art.cd(
+                        2, '', "You call up the Ship Catalog and browse through the Starship specs.", 0, True)
+                    specs = ""
+                    while specs != 'q':
+                        print("")
+                        art.cd(
+                            13, '', "Which ship are you interested in? (", '', False)
+                        art.cd(11, '', "?=List", '', False)
+                        art.cd(13, '', "): ", 0, True)
+                        specs = input("")
+                        match specs:
+                            case '?':
+                                pass
+                            case ('q' | 'Q'):
+                                print("")
+                                art.cd(
+                                    2, '', "You shut off the Vid Term.", 0, True)
+                            case _:
+                                pass
+                case ('p' | 'P'):  # Buy class 0 items
+                    pass
+                case ('r' | 'R'):  # Change ship registration
+                    pass
+                case '?':  # Display menu
+                    print("")
+                    art.cd(2, '', "  The Federation Shipards", '', False)
+                    art.cd(11, '', ":", 0, True)
+                    print("")
+                    art.cd(13, '', " <", '', False)
+                    art.cd(2, '', "B", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(14, '', "Buy a New Ship", 0, True)
+
+                    art.cd(13, '', " <", '', False)
+                    art.cd(2, '', "S", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(14, '', "Sell Extra Ships", 0, True)
+
+                    art.cd(13, '', " <", '', False)
+                    art.cd(2, '', "E", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(14, '', "Examine Ship Specs", 0, True)
+
+                    art.cd(13, '', " <", '', False)
+                    art.cd(2, '', "P", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(14, '', "Buy Class 0 Items", 0, True)
+
+                    art.cd(13, '', " <", '', False)
+                    art.cd(2, '', "R", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(14, '', "Change Ship Registration", 0, True)
+
+                    print("")
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "!", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Shipyards Help", 0, True)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "Q", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Leave the Shipyards", 0, True)
+                case '!':  # Shipyards help
+                    pass
+                case ('q' | 'Q'):  # Leave the shipyards.
+                    print("")
+                    art.cd(2, '', "You leave the shipyards.", 0, True)
+                    break
+                case _:
+                    print("")
+                    art.cd(
+                        2, '', "You can't seem to find anyone to talk to.", 0, True)
