@@ -228,3 +228,18 @@ def setup():
     db.query(connection, query)
 
     art.cd(30, '', "Placing safe harbours throughout the galaxy.", "reset", True)
+
+    # Ship Class table
+    connection = db.stdb()
+    query = "CREATE TABLE `shipclass` (`shcid` int(128) NOT NULL, `shipclassname` varchar(32) NOT NULL, `fgcolour` int(3) NOT NULL, `bgcolour` int(3) NOT NULL, `alignment` varchar(24), `manufacturer` varchar(24), `cargoholdsstart` int(8) NOT NULL, `cargoholdsmax` int(8) NOT NULL, `fightersstart` int(8) NOT NULL, `fightersmax` int(8) NOT NULL, `fighterattackforce` int(8) NOT NULL, `photontorpedoesstart` int(8) NOT NULL, `photontorpedoesmax` int(8) NOT NULL, `shieldsstart` int(8) NOT NULL, `shieldsmax` int(8) NOT NULL, `minesstart` int(8) NOT NULL, `minesmax` int(8) NOT NULL, `minedisruptorsstart` int(8) NOT NULL, `minedisruptorsmax` int(8) NOT NULL, `markerbeaconsstart` int(8) NOT NULL, `markerbeaconsmax` int(8) NOT NULL, `genesistorpedoes` int(8) NOT NULL, `cloakingdevices` int(8) NOT NULL, `cloaked` int(1) NOT NULL, `atomicdetonators` int(8) NOT NULL, `corbomitedevices` int(8) NOT NULL, `subspaceetherprobes` int(8) NOT NULL, `transporterrange` int(8) NOT NULL, `offensiveodds` varchar(8) NOT NULL, `defensiveodds` varchar(8) NOT NULL, `scannerdensity` int(1) NOT NULL, `scannerholo` int(1) NOT NULL, `transwarpdrive` int(1) NOT NULL, `fusiondrive` int(1) NOT NULL, `planetscanner` int(1) NOT NULL, `interdictorgenerator` int(1) NOT NULL, `usedasescapepod` int(1) NOT NULL, `carriesescapepod` int(1) NOT NULL, `escapepodclass` int(8) NOT NULL, `canlandonplanet` int(1) NOT NULL, `defensiveguardianbonus` int(1) NOT NULL, `requirefedcommission` int(1) NOT NULL, `requiredxp` int(8) NOT NULL, `requireorporatestatus` int(1) NOT NULL, `requireceostatus` int(1) NOT NULL, `costofholdspace` varchar(8) NOT NULL, `costofdrive` varchar(8) NOT NULL, `costofcomputersystem` varchar(8) NOT NULL, `costofshipshull` varchar(8) NOT NULL)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `shipclass` ADD PRIMARY KEY (`shcid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `shipclass` MODIFY `shcid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    art.cd(31, '', "Finalizing ship blueprints.", "reset", True)

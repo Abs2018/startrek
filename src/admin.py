@@ -45,14 +45,24 @@ def adm_main_menu():
     art.cd(2, '', "The Big Bang", "", False)
 
     art.cd(5, '', "\t<", "", False)
-    art.cd('light_cyan', '', "S", "", False)
-    art.cd(5, '', "> ", "", False)
-    art.cd(2, '', "Sector Editor", "", False)
-
-    art.cd(5, '', "\t<", "", False)
     art.cd('light_cyan', '', "U", "", False)
     art.cd(5, '', "> ", "", False)
-    art.cd(2, '', "User Editor", "", True)
+    art.cd(2, '', "User Editor", "", False)
+
+    art.cd(5, '', "\t\t<", "", False)
+    art.cd('light_cyan', '', "S", "", False)
+    art.cd(5, '', "> ", "", False)
+    art.cd(2, '', "Ship Editor", "", False)
+
+    art.cd(5, '', "\t\t<", "", False)
+    art.cd('light_cyan', '', "C", "", False)
+    art.cd(5, '', "> ", "", False)
+    art.cd(2, '', "Sector Editor", "", True)
+    # Row 2
+    art.cd(5, '', "<", "", False)
+    art.cd('light_cyan', '', "E", "", False)
+    art.cd(5, '', "> ", "", False)
+    art.cd(2, '', "Empire Editor", "", True)
 
     # Row ??
     print("")
@@ -75,9 +85,15 @@ def adm_main_menu():
                 bb.bb_main_menu()
                 # This will display the menu once you leave the Big Bang Editor.
                 adm_main_menu()
-            case ('s' | 'S'):
+            case ('c' | 'C'):
                 # Sector viewer.
-                pass
+                sector_menu()
+            case ('e' | 'E'):
+                # Empire editor.
+                empire_menu()
+            case ('s' | 'S'):
+                # Ship viewer.
+                ship_menu()
             case ('u' | 'U'):
                 # User viewer.
                 user_menu()
@@ -92,6 +108,23 @@ def adm_main_menu():
                 art.cd(1, '', 'Command not found. Please try again.',
                        "reset", True)
                 print("")
+
+
+def empire_menu():
+    command = ""
+    while command != "q":
+        if command == "":
+            print("")
+            art.cd(5, '', "[Empire Editor] ", '', False)
+            art.cd('light_cyan', '',
+                   "Which empire would you like to edit? ", 0, False)
+            art.cd(226, '', "[?]", '', False)
+            art.cd('light_cyan', '', ": ", 0, False)
+            command = input(" ")
+
+        match command:
+            case ('q' | 'Q'):
+                adm_main_menu()
 
 
 def user_menu():
@@ -359,6 +392,60 @@ def user_menu():
                     print("")
                     art.cd(1, '', "User not found", '', True)
                     command = ""
+
+
+def ship_menu():
+
+    def ship_sub_menu():
+        print("")
+        art.cd(226, '', "\t\t\tSHIP EDITOR OPTIONS", "", True)
+        print("")
+        art.cd(5, '', "<", "", False)
+        art.cd('light_cyan', '', "C", "", False)
+        art.cd(5, '', "> ", "", False)
+        art.cd(2, '', "Create a New Ship", "", True)
+        art.cd(5, '', "<", "", False)
+        art.cd('light_cyan', '', "E", "", False)
+        art.cd(5, '', "> ", "", False)
+        art.cd(2, '', "Edit a Ship", "", True)
+        art.cd(5, '', "<", "", False)
+        art.cd('light_cyan', '', "D", "", False)
+        art.cd(5, '', "> ", "", False)
+        art.cd(2, '', "Delete a Ship", "", True)
+        command = ""
+    command = ""
+    while command != "q":
+        if command == "":
+            print("")
+            art.cd(5, '', "[Ship Editor] ", '', False)
+            art.cd('light_cyan', '',
+                   "What would you like to do? ", 0, False)
+            art.cd(226, '', "[?]", '', False)
+            art.cd('light_cyan', '', ": ", 0, False)
+            command = input(" ")
+
+        match command:
+            case ('?' | ''):
+                ship_sub_menu()
+            case ('q' | 'Q'):
+                adm_main_menu()
+
+
+def sector_menu():
+    command = ""
+    while command != "q":
+        if command == "":
+            print("")
+            art.cd(5, '', "[Sector Editor] ", '', False)
+            art.cd('light_cyan', '',
+                   "Which sector would you like to edit? ", 0, False)
+            art.cd(226, '', "[?]", '', False)
+            art.cd('light_cyan', '', ": ", 0, False)
+            command = input(" ")
+
+        match command:
+            case ('q' | 'Q'):
+                adm_main_menu()
 
 
 # The Main Menu
