@@ -2,7 +2,9 @@ import random
 from modules import art
 from classes import playerClass
 from classes import stationClass
+from classes import shipClass
 stationClass = stationClass.stationClass()
+shipClass = shipClass.shipClass()
 
 
 class menus():
@@ -276,7 +278,7 @@ class menus():
                         specs = input("")
                         match specs:
                             case '?':
-                                pass
+                                shipClass.shipClassesView()
                             case ('q' | 'Q'):
                                 print("")
                                 art.cd(

@@ -8,8 +8,9 @@ from modules import art
 from modules import setup
 from modules import bigbang as bb
 from classes import playerClass
+from classes import shipClass
 playerClass = playerClass.player()
-
+shipClass = shipClass.shipClass()
 
 # import cgi
 
@@ -427,6 +428,12 @@ def ship_menu():
         match command:
             case ('?' | ''):
                 ship_sub_menu()
+            case ('c' | 'C'):
+                shipClass.shipClassCreate()
+                break
+            case ('e' | 'E'):
+                shipClass.shipClassesView()
+                break
             case ('q' | 'Q'):
                 adm_main_menu()
 
