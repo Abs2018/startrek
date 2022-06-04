@@ -242,12 +242,36 @@ def setup():
     query = "ALTER TABLE `shipclass` MODIFY `shcid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(31, '', "Finalizing ship blueprints.", "reset", True)
-
     # Insert ships
+    '''
+	Escape Pod
+	Class F Shuttle
+	Cargo Ship
+	Daedelus
+	Saladin
+	Reliant
+	Constitution
+	Federation
+	'''
     connection = db.stdb()
-    shipclasses = [('*** Escape Pod ***', '27', '999', '2', 'Federation Shipyards', '1', '5', '1', '50', '25', '0', '0', '15', '50', '0', '0', '50', '0', '0', '1', '0', '0', '0', '0', '0', '1', '0.5', '0.5', '0', '0', '0', '0', '1', '0', '1', '0', '0', '1', '0', '0', '0', '0', '0', '500', '4246', '4700', '5000'), ('Constitution',
-                                                                                                                                                                                                                                                                                                                            '255', '27', '2', 'Federation Shipyards', '40', '150', '10000', '50000', '10000', '5', '50', '2000', '10000', '0', '125', '10', '10', '150', '150', '10', '0', '0', '1500', '5', '15', '1.5', '1.5', '0', '1', '1', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '23000', '10000', '231000', '65000')]
+    shipclasses = [('*** Escape Pod ***', '27', '999', '2', 'Federation Shipyards', '1', '5', '1', '50', '25', '0', '0', '15', '50', '0', '0', '50', '0', '0', '1', '0', '0', '0', '0', '0', '1', '0.5', '0.5', '0', '0', '0', '0', '1', '0', '1', '0', '0', '1', '0', '0', '0', '0', '0', '500', '4246', '4700', '5000'), ('Saladin',
+                                                                                                                                                                                                                                                                                                                            '2', '999', '2', 'Federation Shipyards', '20', '75', '30', '2500', '750', '5', '25', '100', '400', '0', '50', '0', '10', '10', '50', '5', '0', '5', '1500', '25', '5', '1', '1', '1', '1', '1', '1', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '10000', '1000', '20300', '10000'), ('Constitution',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             '255', '27', '2', 'Federation Shipyards', '40', '150', '10000', '50000', '10000', '5', '50', '2000', '10000', '0', '125', '10', '10', '150', '150', '10', '0', '0', '1500', '5', '15', '1.5', '1.5', '1', '1', '1', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '23000', '10000', '231000', '65000')]
 
     query = "INSERT INTO `shipclass` (`shipclassname`, `fgcolour`, `bgcolour`, `alignment`, `manufacturer`, `cargoholdsstart`, `cargoholdsmax`, `fightersstart`, `fightersmax`, `fighterattackforce`, `photontorpedoesstart`, `photontorpedoesmax`,  `shieldsstart`, `shieldsmax`, `minesstart`, `minesmax`, `minedisruptorsstart`, `minedisruptorsmax`, `markerbeaconsstart`, `markerbeaconsmax`, `genesistorpedoes`, `cloakingdevices`, `atomicdetonators`, `corbomitedevices`,`subspaceetherprobes`, `transporterrange`, `offensiveodds`, `defensiveodds`, `scannerdensity`, `scannerholo`, `transwarpdrive`, `fusiondrive`, `planetscanner`, `interdictorgenerator`, `usedasescapepod`, `carriesescapepod`, `escapepodclass`, `canlandonplanet`, `defensiveguardianbonus`, `requirefedcommission`, `requiredxp`, `requirecorporatestatus`, `requireceostatus`, `costofholdspace`, `costofdrive`, `costofcomputersystem`, `costofshipshull`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     db.querymany(connection, query, shipclasses)
+
+    # Ships table
+    connection = db.stdb()
+    query = "CREATE TABLE `ships` (`shid` int(128) NOT NULL, `shipname` varchar(32) NOT NULL, `ownedby` int(16) NOT NULL, `ports` int(16) NOT NULL, `kills` int(16), `shipclass` int(128), `cloaked` int(1) NOT NULL, `locationx` int(128) NOT NULL, `locationy` int(128) NOT NULL, `fighters` int(16) NOT NULL, `shields` int(8) NOT NULL, `holds` int(8) NOT NULL, `invfuelore` int(8) NOT NULL, `invorganics` int(8) NOT NULL, `invequipment` int(8) NOT NULL, `invcolonists` int(8) NOT NULL, `genesistorpedoes` int(8) NOT NULL, `mines` int(8) NOT NULL, `markerbeacons` int(8) NOT NULL, `holoscanner` int(1) NOT NULL, `transwarpdrive` int(1) NOT NULL, `onplanetnum` int(16) NOT NULL, `cloakingdevices` int(8) NOT NULL, `interdicting` int(1) NOT NULL, `atomicdetonators` int(8) NOT NULL, `corbomitedevices` int(8) NOT NULL, `subspaceetherprobes` int(8) NOT NULL, `minedisruptors` int(8) NOT NULL, `photontorpedoes` int(8) NOT NULL, `psychicprobe` int(1) NOT NULL, `planetscanner` int(1) NOT NULL)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ships` ADD PRIMARY KEY (`shid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ships` MODIFY `shid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    art.cd(31, '', "Finalizing ship blueprints.", "reset", True)

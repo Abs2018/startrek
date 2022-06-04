@@ -284,7 +284,8 @@ class menus():
                                 art.cd(
                                     2, '', "You shut off the Vid Term.", 0, True)
                             case _:
-                                pass
+                                shipClass.shipView(specs)
+
                 case ('p' | 'P'):  # Buy class 0 items
                     pass
                 case ('r' | 'R'):  # Change ship registration

@@ -413,7 +413,7 @@ def ship_menu():
         art.cd('light_cyan', '', "D", "", False)
         art.cd(5, '', "> ", "", False)
         art.cd(2, '', "Delete a Ship", "", True)
-        command = ""
+
     command = ""
     while command != "q":
         if command == "":
@@ -428,6 +428,7 @@ def ship_menu():
         match command:
             case ('?' | ''):
                 ship_sub_menu()
+                command = ""
             case ('c' | 'C'):
                 shipClass.shipClassCreate()
                 break
@@ -436,6 +437,8 @@ def ship_menu():
                 break
             case ('q' | 'Q'):
                 adm_main_menu()
+            case _:
+                shipClass.shipView(command)
 
 
 def sector_menu():

@@ -1,10 +1,13 @@
+from classes import shipClass
 from dataclasses import dataclass
+from os import getpid
 import mysql.connector
 from mysql.connector import Error
 from modules import db
 from modules import art
 from classes import log
 log = log.log()
+shipClass = shipClass.shipClass()
 
 # TODO:
 # * Check to make sure that the user's first name is not 'q'
@@ -106,9 +109,6 @@ class player():
                 case _:
                     branch = ""
         # Save the player name.
-        print("")
-        art.cd(
-            'cyan', '', "Give me a moment to sign you in...Okay, you're all set!", '', True)
         alignment = "Federation"
         rank = 1
         xp = 0
@@ -129,11 +129,30 @@ class player():
             lname)+"', '"+str(alignment)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
         # print(query)
         db.query(connection, query)
+
+        # Get the player's PID
+        pid = getpid(callsign)
+        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Get the ship class number for the Saladin
+
+        # Ask for the ship name
+
+        # Launch the shipCreate(pid, shipname, shipclass) function to assign the player to a ship.
+
+        print("")
+        art.cd(
+            'cyan', '', "Give me a moment to sign you in...Okay, you're all set!", '', True)
+
         # Log the event
         connection = db.stdb()
         logtype = "NEWPLAYER"
         logevent = fname + " " + lname + " joined the " + alignment + "!"
         log.logAdd(logtype, logevent)
+
+    def getpid(self, callsign):
+        connection = db.stdb()
+        query = "SELECT `pid` FROM `players` WHERE `callsign` = '" + \
+            str(callsign)+"'"
+        db.query(connection, query)
 
     def changecallsign(self, pid):
         while True:

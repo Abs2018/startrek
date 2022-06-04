@@ -37,9 +37,6 @@ pid = playerClass.check()
 log.logShow()
 # Instantiate Player
 playerinfo = player.player(pid)
-# print("Hello Cadet "+str(playerinfo.locationx))
-# while command != 'q' or command != 'Q':
-# 	menu.eventHandler(playerinfo)
 command = ""
 
 while True:

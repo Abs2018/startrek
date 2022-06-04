@@ -1,5 +1,8 @@
 from dataclasses import dataclass
+from fileinput import filename
 import mysql.connector
+import platform
+import os
 from mysql.connector import Error
 from modules import db
 from modules import art
@@ -808,9 +811,184 @@ class shipClass():
 
         # Save the ship into the table.
 
+    def shipImageView(self, filename):
+        # Clear the screen
+        os.system('cls' if os.name == 'nt' else 'clear')
+        # f = open(filename, "r", encoding ="cp437")
+        f = open(filename, "r", encoding="utf8")
+        shipclassart = f.read().splitlines()
+        f.close()
+        for line in shipclassart:
+            artline = line.split(";")
+            if artline[3] == "False":
+                artline[3] = ""
+            # print(artline[0], artline[1], artline[2], artline[3])
+            art.cd(int(artline[0]), int(artline[1]),
+                   str(artline[2]), 0, bool(artline[3]))
+
+    def shipView(self, shcid):
+        # Get ship info from database.
+        connection = db.stdb()
+        query = "SELECT * FROM `shipclass` WHERE `shcid`='"+str(shcid)+"'"
+        # print(query)
+        results = db.query(connection, query)
+        if results:
+            for row in results:
+                shcid = row['shcid']
+                shipclassname = row['shipclassname']
+                fgcolour = row['fgcolour']
+                bgcolour = row['bgcolour']
+                alignment = row['alignment']
+                manufacturer = row['manufacturer']
+                cargoholdsstart = row['cargoholdsstart']
+                cargoholdsmax = row['cargoholdsmax']
+                fightersstart = row['fightersstart']
+                fightersmax = row['fightersmax']
+                fighterattackforce = row['fighterattackforce']
+                photontorpedoesstart = row['photontorpedoesstart']
+                photontorpedoesmax = row['photontorpedoesmax']
+                shieldsstart = row['shieldsstart']
+                shieldsmax = row['shieldsmax']
+                minesstart = row['minesstart']
+                minesmax = row['minesmax']
+                minedisruptorsstart = row['minedisruptorsstart']
+                minedisruptorsmax = row['minedisruptorsmax']
+                markerbeaconsstart = row['markerbeaconsstart']
+                markerbeaconsmax = row['markerbeaconsmax']
+                genesistorpedoes = row['genesistorpedoes']
+                cloakingdevices = row['cloakingdevices']
+                atomicdetonators = row['atomicdetonators']
+                corbomitedevices = row['corbomitedevices']
+                subspaceetherprobes = row['subspaceetherprobes']
+                transporterrange = row['transporterrange']
+                offensiveodds = row['offensiveodds']
+                defensiveodds = row['defensiveodds']
+                scannerdensity = row['scannerdensity']
+                scannerholo = row['scannerholo']
+                transwarpdrive = row['transwarpdrive']
+                fusiondrive = row['fusiondrive']
+                planetscanner = row['planetscanner']
+                interdictorgenerator = row['interdictorgenerator']
+                usedasescapepod = row['usedasescapepod']
+                carriesescapepod = row['carriesescapepod']
+                escapepodclass = row['escapepodclass']
+                canlandonplanet = row['canlandonplanet']
+                defensiveguardianbonus = row['defensiveguardianbonus']
+                requirefedcommission = row['requirefedcommission']
+                requiredxp = row['requiredxp']
+                requirecorporatestatus = row['requirecorporatestatus']
+                requireceostatus = row['requireceostatus']
+                costofholdspace = row['costofholdspace']
+                costofdrive = row['costofdrive']
+                costofcomputersystem = row['costofcomputersystem']
+                costofshipshull = row['costofshipshull']
+            # Get the operating system to determine how to interact with any player or game folders.
+            opsys = (platform.system())
+            path = os.getcwd()  # Get the current working directory
+            # Set the appropriate slash for the operating system.
+            if opsys == "Windows":  # I believe Windows is the only OS that uses \
+                slash = "\\"
+            else:  # All other OS's use /.
+                slash = "/"
+            path = path+slash  # Create the path variable.
+            filename = shipclassname+"-Art"
+            filename = filename.replace('*', "")
+            filename = filename.replace(" ", "")
+            filename = path+"data"+slash+"ships"+slash+filename
+            shipClass.shipImageView(self, filename)
+            print("")
+            print("")
+            print("")
+            # Calculate any values that need calculating
+            shipbasecost = int(costofholdspace) + int(costofdrive) + \
+                int(costofcomputersystem) + int(costofshipshull)
+            if scannerholo == 1:
+                scannerholo = 'Yes'
+            else:
+                scannerholo = 'No'
+            if transwarpdrive == 1:
+                transwarpdrive = 'Yes'
+            else:
+                transwarpdrive = 'No'
+            if planetscanner == 1:
+                planetscanner = 'Yes'
+            else:
+                planetscanner = 'No'
+
+            # Row 1
+            art.cd(2, '', "    Basic Hold Cost", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(costofholdspace), '', False)
+            art.cd(2, '', "\t  Initial Holds", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(cargoholdsstart), '', False)
+            art.cd(2, '', "\t  Maximum Shields", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(shieldsmax), 0, True)
+            # Row 2
+            art.cd(2, '', "    Main Drive Cost", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(costofdrive), '', False)
+            art.cd(2, '', "\t   Max Fighters", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(fightersmax), '', False)
+            art.cd(2, '', "\t   Offensive Odds", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(offensiveodds), 0, True)
+            # Row 3
+            art.cd(2, '', "      Computer Cost", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(costofcomputersystem), '', False)
+            art.cd(2, '', "\t Turns Per Warp", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', "N/A", '', False)
+            art.cd(2, '', "\t   Offensive Odds", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(offensiveodds), 0, True)
+            # Row 4
+            art.cd(2, '', "     Ship Hull Cost", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(costofshipshull), '', False)
+            art.cd(2, '', "\t       Mine Max", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(minesmax), '', False)
+            art.cd(2, '', "\t       Beacon Max", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(markerbeaconsmax), 0, True)
+            # Row 5
+            art.cd(2, '', "     Ship Base Cost", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(shipbasecost), '', False)
+            art.cd(2, '', "\t    Genesis Max", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(genesistorpedoes), '', False)
+            art.cd(2, '', "\t  Long Range Scan", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(scannerholo), 0, True)
+            # Row 6
+            art.cd(2, '', "Max Figs Per Attack", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(fighterattackforce), '', False)
+            art.cd(2, '', "\tTranswarp Drive", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(transwarpdrive), '', False)
+            art.cd(2, '', "\t   Planet Scanner", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(scannerholo), 0, True)
+            # Row 7
+            art.cd(2, '', "      Maximum Holds", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(cargoholdsmax), '', False)
+            art.cd(2, '', "\tTransport Range", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(transporterrange), '', False)
+            art.cd(2, '', "\t  Photon Missiles", '', False)
+            art.cd(11, '', ":   ", '', False)
+            art.cd(14, '', str(photontorpedoesmax), 0, True)
+
     def shipClassesView(self):
         connection = db.stdb()
-        query = "select `shcid`,`shipclassname`,`fgcolour`,`bgcolour` from `shipclass`"
+        query = "SELECT `shcid`,`shipclassname`,`fgcolour`,`bgcolour` FROM `shipclass`"
         # print(query)
         results = db.query(connection, query)
         if results:
