@@ -1,9 +1,11 @@
 import random
+from classes import player
 from modules import art
 from classes import playerClass
 from classes import stationClass
 from classes import shipClass
 stationClass = stationClass.stationClass()
+playerClass = playerClass.player()
 shipClass = shipClass.shipClass()
 
 
@@ -162,7 +164,10 @@ class menus():
                         print("")
                         art.cd(
                             9, '', "With all the security personnel on this station, you are not surprised that you can't find a black market here.", 0, True)
-
+                case ("r" | "R"):  # Return to ship
+                    #playerinfo = player.player(pid)
+                    playerinfo.whereami = playerClass.changewhereami(
+                        playerinfo.pid, "ship")
                 case ("q" | "Q"):  # Quit the whole game.
                     print("")
                     art.cd(255, 27, "Live long and prosper.", 0, True)

@@ -1,3 +1,4 @@
+from classes import player
 from classes import shipClass
 from dataclasses import dataclass
 import mysql.connector
@@ -125,7 +126,7 @@ class player():
         deaths = 0
         locationx = 0
         locationy = 0
-        whereami = "station"
+        whereami = "port"
         health = 100
         species = "Human"
         age = 22
@@ -333,13 +334,8 @@ class player():
         db.query(connection, query)
         return locationy
 
-    def changewhereami(self, pid):
-        while True:
-            print("")
-            art.cd('light_cyan', '', "Update Where I Am:", 0, False)
-            whereami = input(" ")
-            if whereami:
-                break
+    # Options are: port, ship, planet, space
+    def changewhereami(self, pid, whereiamgoing):
         connection = db.stdb()
         query = "UPDATE `players` SET `whereami`='" + \
             whereami+"' WHERE `pid`='"+str(pid)+"'"

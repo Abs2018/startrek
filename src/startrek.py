@@ -47,7 +47,7 @@ while True:
             print("")
             quit()
         case _:
-            if playerinfo.whereami == "station":
+            if playerinfo.whereami == "port":
                 # Get the dock information using the location.
                 stationinfo = station.station(
                     playerinfo.locationx, playerinfo.locationy)
