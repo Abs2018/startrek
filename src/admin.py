@@ -438,7 +438,7 @@ def ship_menu():
             case ('q' | 'Q'):
                 adm_main_menu()
             case _:
-                shipClass.shipView(command)
+                shipClass.shipClassView(command)
 
 
 def sector_menu():

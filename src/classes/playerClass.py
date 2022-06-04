@@ -1,6 +1,5 @@
 from classes import shipClass
 from dataclasses import dataclass
-from os import getpid
 import mysql.connector
 from mysql.connector import Error
 from modules import db
@@ -64,6 +63,16 @@ class player():
             query = "select * from `players` where `callsign` = '"+callsign+"'"
             results = db.query(connection, query)
             for row in results:
+                pid = row['pid']
+        return pid
+
+    def getplayerid(callsign):
+        connection = db.stdb()
+        query = "SELECT `pid` FROM `players` WHERE `callsign` = '" + \
+            str(callsign)+"'"
+        result = db.query(connection, query)
+        if result:
+            for row in result:
                 pid = row['pid']
         return pid
 
@@ -131,12 +140,17 @@ class player():
         db.query(connection, query)
 
         # Get the player's PID
-        pid = getpid(callsign)
-        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Get the ship class number for the Saladin
+        pid = player.getplayerid(callsign)
+        # Get the ship class number for the Saladin
+        connection = db.stdb()
+        query = "SELECT `shcid` FROM `shipclass` WHERE `shipclassname` = 'Saladin'"
+        result = db.query(connection, query)
+        if result:
+            for row in result:
+                shipclass = row['shcid']
 
-        # Ask for the ship name
-
-        # Launch the shipCreate(pid, shipname, shipclass) function to assign the player to a ship.
+        # Launch the shipCreate(pid, shipclass) function to assign the player to a ship.
+        shipClass.shipCreate(pid, shipclass)
 
         print("")
         art.cd(
@@ -147,12 +161,6 @@ class player():
         logtype = "NEWPLAYER"
         logevent = fname + " " + lname + " joined the " + alignment + "!"
         log.logAdd(logtype, logevent)
-
-    def getpid(self, callsign):
-        connection = db.stdb()
-        query = "SELECT `pid` FROM `players` WHERE `callsign` = '" + \
-            str(callsign)+"'"
-        db.query(connection, query)
 
     def changecallsign(self, pid):
         while True:

@@ -7,9 +7,13 @@ from mysql.connector import Error
 from modules import db
 from modules import art
 from classes import log
+from classes import player
+from classes import ship
 log = log.log()
 # TODO:
-# *
+#! BUG: Right now shipClassesView displays the shcid as the menu option. Not ideal in the future when you are on different empire ports showing their ships instead of the federation.
+# * Change the variables in shipClassAttributes to self.variablename.
+# * shipClassView makes an SQL call to the DB. Instead, use shipClassAttributes.
 
 
 @dataclass
@@ -20,8 +24,9 @@ class shipClass():
     '''
     This function returns all the attributes of the specific ship class.
     '''
+    # Moved this to ship.py
 
-    def shipAttributes(self, shcid):
+    def shipClassAttributes(self, shcid):
         connection = db.stdb()
         query = "select * from `shipclass` where `shcid` = '"+str(shcid)+"'"
         # print(query)
@@ -826,7 +831,28 @@ class shipClass():
             art.cd(int(artline[0]), int(artline[1]),
                    str(artline[2]), 0, bool(artline[3]))
 
-    def shipView(self, shcid):
+    # Show menu with all shipclass names.
+    def shipClassesView(self):
+        connection = db.stdb()
+        query = "SELECT `shcid`,`shipclassname`,`fgcolour`,`bgcolour` FROM `shipclass`"
+        # print(query)
+        results = db.query(connection, query)
+        if results:
+            print("")
+            art.cd(226, '', "\t\t\tSHIP CLASSES", "", True)
+            print("")
+            for row in results:
+                art.cd(13, '', " <", '', False)
+                art.cd(2, '', str(row['shcid']), '', False)
+                art.cd(13, '', "> ", '', False)
+                if str(row['bgcolour']) == '999':
+                    row['bgcolour'] = ''
+                art.cd(str(row['fgcolour']), str(row['bgcolour']),
+                       str(row['shipclassname']), 0, True)
+            print("")
+
+    # Show single ship class details.
+    def shipClassView(self, shcid):
         # Get ship info from database.
         connection = db.stdb()
         query = "SELECT * FROM `shipclass` WHERE `shcid`='"+str(shcid)+"'"
@@ -986,21 +1012,23 @@ class shipClass():
             art.cd(11, '', ":   ", '', False)
             art.cd(14, '', str(photontorpedoesmax), 0, True)
 
-    def shipClassesView(self):
+    # Create a player ship, either on player creation, or when buying a new ship.
+    def shipCreate(self, pid, shcid):
+        # In here ask "What would you like to name your ship?"
+        art.cd(
+            'cyan', '', "What shall we name your brand new ship? ", 0, True)
+        shipname = input("")
+        # Get the shipclass values from the table
+        # shipClass.shipClassAttributes(shcid)
+        shipclassattr = ship.ship(shcid)
+        # Get the new owner info
+        owner = player.player(pid)
+
+        # Save the ship
         connection = db.stdb()
-        query = "SELECT `shcid`,`shipclassname`,`fgcolour`,`bgcolour` FROM `shipclass`"
+        # print("Owner Location X: "+str(owner.locationx))
+        query = "INSERT INTO `ships` (`shipname`, `ownedby`, `ports`, `kills` , `shipclass`, `cloaked`, `locationx`, `locationy`, `fighters`, `shields`, `holds`, `invfuelore`, `invorganics`, `invequipment`, `invcolonists`, `genesistorpedoes`, `mines`, `markerbeacons`, `holoscanner`, `transwarpdrive`, `onplanetnum`, `cloakingdevices`, `interdicting`, `atomicdetonators`, `corbomitedevices`, `subspaceetherprobes`, `minedisruptors`, `photontorpedoes`, `psychicprobe`, `planetscanner`) VALUES ('"+str(
+            shipname)+"', '"+str(pid)+"', '1', '0', '"+str(shcid)+"', '0', '"+str(owner.locationx)+"', '"+str(owner.locationy)+"', '" + str(shipclassattr.fightersstart)+"', '"+str(shipclassattr.shieldsstart)+"', '"+str(shipclassattr.cargoholdsstart)+"', '0', '0' ,'0', '0', '0', '0', '"+str(shipclassattr.markerbeaconsstart)+"', '0', '"+str(shipclassattr.transwarpdrive)+"', '0', '0', '0', '0', '0', '0', '0', '"+str(shipclassattr.photontorpedoesstart)+"', '0', '0')"
+
         # print(query)
-        results = db.query(connection, query)
-        if results:
-            print("")
-            art.cd(226, '', "\t\t\tSHIP CLASSES", "", True)
-            print("")
-            for row in results:
-                art.cd(13, '', " <", '', False)
-                art.cd(2, '', str(row['shcid']), '', False)
-                art.cd(13, '', "> ", '', False)
-                if str(row['bgcolour']) == '999':
-                    row['bgcolour'] = ''
-                art.cd(str(row['fgcolour']), str(row['bgcolour']),
-                       str(row['shipclassname']), 0, True)
-            print("")
+        db.query(connection, query)
