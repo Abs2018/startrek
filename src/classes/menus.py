@@ -62,14 +62,6 @@ class menus():
                     displaymain()
 
     def portmenu(self, portinfo, playerinfo):
-        menus.ports(self, portinfo, playerinfo)
-
-        # if portinfo.portclass == 0:
-        #     menus.spacedock(self, portinfo, playerinfo)
-        # else:
-        #     menus.ports(self, portinfo, playerinfo)
-
-    def ports(self, portinfo, playerinfo):
         command = ""
         while command != "q":
             print("")
@@ -165,9 +157,11 @@ class menus():
                         art.cd(
                             9, '', "With all the security personnel on this station, you are not surprised that you can't find a black market here.", 0, True)
                 case ("r" | "R"):  # Return to ship
-                    #playerinfo = player.player(pid)
+                    # playerinfo = player.player(pid)
+                    # print(playerinfo.pid)
                     playerinfo.whereami = playerClass.changewhereami(
                         playerinfo.pid, "ship")
+                    break
                 case ("q" | "Q"):  # Quit the whole game.
                     print("")
                     art.cd(255, 27, "Live long and prosper.", 0, True)
@@ -344,3 +338,227 @@ class menus():
                     print("")
                     art.cd(
                         2, '', "You can't seem to find anyone to talk to.", 0, True)
+
+    def shipmenu(self, shipinfo, playerinfo):
+        command = ""
+        while command != "q":
+            print("")
+            art.cd(13, '', "Command [", '', False)
+            art.cd(14, '', str(playerinfo.locationx), '', False)
+            art.cd(13, '', ",", '', False)
+            art.cd(14, '', str(playerinfo.locationy), '', False)
+            art.cd(13, '', "] (", '', False)
+            art.cd(11, '', "?=Help", '', False)
+            art.cd(13, '', "): ", '', False)
+            command = input("")
+            match command:
+                case ("d" | "D"):  # Display Sector Summary
+                    pass
+                case ("p" | "P"):  # Land on Port
+
+                    playerinfo.whereami = playerClass.changewhereami(
+                        playerinfo.pid, "port")
+                    break
+                case ("q" | "Q"):  # Quit the whole game.
+                    print("")
+                    art.cd(255, 27, "Live long and prosper.", 0, True)
+                    print("")
+                    quit()
+
+                case ('?' | ''):  # Help
+
+                    '''
+                    Characters from https://en.wikipedia.org/wiki/Code_page_437
+
+                    ░ ▒ ▓ █ ▄ ▀ ■ ▌▐ │ ┤ ╡ ╢ ╖ ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐ └ ┴ ┬ ├ ─ ┼ ╞ ╟ ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧ ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫ ╪ ┘ ┌
+                    · ∙ ° ° • . * 
+                    ┌─┬─┐
+                    │ │ │
+                    ├─┼─┤
+                    └─┴─┘
+                    '''
+                    print("")
+                    art.cd(9, 0, "<Help>", 0, True)
+                    print("")
+                    art.cd(2, '', "╔═══════════════════════════════ ", 0, False)
+                    art.cd(11, '', "STAR TREK", 0, False)
+                    art.cd(2, '', " ═══════════════════════════════╗", 0, True)
+
+                    # Row 1
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', "\tNavigation", 0, False)
+                    art.cd(13, '', "\t\tComputer", 0, False)
+                    art.cd(13, '', "\t      Tactical", 0, False)
+                    art.cd(2, '', "            ║", 0, True)
+                    # Row 2
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(11, '', "\t=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(11, '', "\t\t=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(11, '', "\t      =", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "-", 0, False)
+                    art.cd(11, '', "=", 0, False)
+                    art.cd(2, '', "            ║", 0, True)
+                    # Row 3
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "D", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Display Sector", 0, False)
+                    art.cd(13, '', "    <", '', False)
+                    art.cd(10, '', "C", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Onboard Computer", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "A", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Attack Enemy Ship", 0, False)
+                    art.cd(2, '', "       ║", 0, True)
+                    # Row 4
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "P", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Port and Trade", 0, False)
+                    art.cd(13, '', "    <", '', False)
+                    art.cd(10, '', "X", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Transporter Pad", 0, False)
+                    art.cd(13, '', "  <", '', False)
+                    art.cd(10, '', "E", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Sub-space EtherProbe", 0, False)
+                    art.cd(2, '', "    ║", 0, True)
+                    # Row 4
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "M", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Move to a Sector ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "I", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Ship Information", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "F", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Take or Leave Fighters ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 5
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "O", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Orbit a Planet   ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "C", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Corporate Menu  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "G", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Show Deployed Fighters ", 0, False)
+                    art.cd(2, '', " ║ ", 0, True)
+                    # Row 6
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "S", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Long Range Scan  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "U", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Use Genesis Torp", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "H", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Handle Space Mines     ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 7
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "R", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Release Beacon   ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "J", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Jettison Cargo  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "K", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Show Deployed Mines    ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 8
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "W", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Tow Spacecraft   ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "B", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Interdict Ctrl  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "L", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Starport Construction  ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 9
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "N", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Move to NavPoint ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "!", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Main Menu Help  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(10, '', "Y", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(123, '', "Set NavPoints          ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 10
+                    art.cd(2, '', "║ ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "Q", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Quit and Exit    ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "Z", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "Star Trek Docs  ", 0, False)
+                    art.cd(13, '', " <", '', False)
+                    art.cd(11, '', "V", '', False)
+                    art.cd(13, '', "> ", '', False)
+                    art.cd(11, '', "View Game Status       ", 0, False)
+                    art.cd(2, '', " ║", 0, True)
+                    # Row 11
+                    art.cd(
+                        2, '', "╚═════════════════════════════════════════════════════════════════════════╝", 0, True)
+
+                case _:
+                    print("")
+                    art.cd(
+                        9, '', "I'm unfamiliar with that command.", 0, True)

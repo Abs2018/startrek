@@ -8,6 +8,7 @@ class player():
     def __init__(self, pid):
         connection = db.stdb()
         query = "select * from `players` where `pid` = '"+str(pid)+"'"
+        # print(query)
         results = db.query(connection, query)
         if results:
             for row in results:

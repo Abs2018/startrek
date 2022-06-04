@@ -3,6 +3,7 @@
 # Import the required modules.
 from classes import station
 from classes import player
+from classes import ship
 from classes import log
 from classes import intro
 from modules import art
@@ -38,6 +39,9 @@ log.logShow()
 # Instantiate Player
 playerinfo = player.player(pid)
 command = ""
+# Instantiate Player Ship
+shipinfo = ship.ship(playerinfo.pid)
+command = ""
 
 while True:
     match command:
@@ -59,6 +63,7 @@ while True:
                 # else:
                 #     pass
             elif playerinfo.whereami == "ship":
-                m.playership(path, slash, player)
+                # m.playership(path, slash, player)
+                menu.shipmenu(shipinfo, playerinfo)
             elif playerinfo.whereami == "planet":
                 pass

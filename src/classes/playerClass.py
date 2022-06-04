@@ -338,10 +338,10 @@ class player():
     def changewhereami(self, pid, whereiamgoing):
         connection = db.stdb()
         query = "UPDATE `players` SET `whereami`='" + \
-            whereami+"' WHERE `pid`='"+str(pid)+"'"
+            whereiamgoing+"' WHERE `pid`='"+str(pid)+"'"
         # print(query)
         db.query(connection, query)
-        return whereami
+        return whereiamgoing
 
     def changehealth(self, pid):
         while True:

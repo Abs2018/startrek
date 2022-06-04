@@ -8,7 +8,7 @@ from modules import db
 from modules import art
 from classes import log
 from classes import player
-from classes import ship
+from classes import shipClassInfo
 log = log.log()
 # TODO:
 #! BUG: Right now shipClassesView displays the shcid as the menu option. Not ideal in the future when you are on different empire ports showing their ships instead of the federation.
@@ -1020,15 +1020,20 @@ class shipClass():
         shipname = input("")
         # Get the shipclass values from the table
         # shipClass.shipClassAttributes(shcid)
-        shipclassattr = ship.ship(shcid)
+        shipclassattr = shipClassInfo.shipClassInfo(shcid)
         # Get the new owner info
         owner = player.player(pid)
+
+        # Update any previously owned ships that are active and make them inactive.
+        connection = db.stdb()
+        query = "UPDATE `ships` SET `active`='0' WHERE `pid`='"+str(owner)+"'"
+        db.query(connection, query)
 
         # Save the ship
         connection = db.stdb()
         # print("Owner Location X: "+str(owner.locationx))
-        query = "INSERT INTO `ships` (`shipname`, `ownedby`, `ports`, `kills` , `shipclass`, `cloaked`, `locationx`, `locationy`, `fighters`, `shields`, `holds`, `invfuelore`, `invorganics`, `invequipment`, `invcolonists`, `genesistorpedoes`, `mines`, `markerbeacons`, `holoscanner`, `transwarpdrive`, `onplanetnum`, `cloakingdevices`, `interdicting`, `atomicdetonators`, `corbomitedevices`, `subspaceetherprobes`, `minedisruptors`, `photontorpedoes`, `psychicprobe`, `planetscanner`) VALUES ('"+str(
-            shipname)+"', '"+str(pid)+"', '1', '0', '"+str(shcid)+"', '0', '"+str(owner.locationx)+"', '"+str(owner.locationy)+"', '" + str(shipclassattr.fightersstart)+"', '"+str(shipclassattr.shieldsstart)+"', '"+str(shipclassattr.cargoholdsstart)+"', '0', '0' ,'0', '0', '0', '0', '"+str(shipclassattr.markerbeaconsstart)+"', '0', '"+str(shipclassattr.transwarpdrive)+"', '0', '0', '0', '0', '0', '0', '0', '"+str(shipclassattr.photontorpedoesstart)+"', '0', '0')"
+        query = "INSERT INTO `ships` (`shipname`, `ownedby`, `active`, `ports`, `kills` , `shipclass`, `cloaked`, `locationx`, `locationy`, `fighters`, `shields`, `holds`, `invfuelore`, `invorganics`, `invequipment`, `invcolonists`, `genesistorpedoes`, `mines`, `markerbeacons`, `holoscanner`, `transwarpdrive`, `onplanetnum`, `cloakingdevices`, `interdicting`, `atomicdetonators`, `corbomitedevices`, `subspaceetherprobes`, `minedisruptors`, `photontorpedoes`, `psychicprobe`, `planetscanner`) VALUES ('"+str(
+            shipname)+"', '"+str(pid)+"', '1', '1', '0', '"+str(shcid)+"', '0', '"+str(owner.locationx)+"', '"+str(owner.locationy)+"', '" + str(shipclassattr.fightersstart)+"', '"+str(shipclassattr.shieldsstart)+"', '"+str(shipclassattr.cargoholdsstart)+"', '0', '0' ,'0', '0', '0', '0', '"+str(shipclassattr.markerbeaconsstart)+"', '0', '"+str(shipclassattr.transwarpdrive)+"', '0', '0', '0', '0', '0', '0', '0', '"+str(shipclassattr.photontorpedoesstart)+"', '0', '0')"
 
         # print(query)
         db.query(connection, query)

@@ -1,4 +1,14 @@
 from colored import fg, bg, attr
+'''
+    Characters from https://en.wikipedia.org/wiki/Code_page_437
+
+    ░ ▒ ▓ █ ▄ ▀ ■ ▌▐ │ ┤ ╡ ╢ ╖ ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐ └ ┴ ┬ ├ ─ ┼ ╞ ╟ ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧ ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫ ╪ ┘ ┌
+    · ∙ ° ° • . * 
+    ┌─┬─┐
+    │ │ │
+    ├─┼─┤
+    └─┴─┘
+    '''
 
 
 def cd(fore, back, txt, attrib, newline):
@@ -142,16 +152,6 @@ def shipyards():
     cd(4, 4, '█████', '', False)
     cd(27, 0, '│', '', False)
     cd(15, 0, '   the registrations on some of the older   ', 0, True)
-    '''
-    Characters from https://en.wikipedia.org/wiki/Code_page_437
-
-    ░ ▒ ▓ █ ▄ ▀ ■ ▌▐ │ ┤ ╡ ╢ ╖ ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐ └ ┴ ┬ ├ ─ ┼ ╞ ╟ ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧ ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫ ╪ ┘ ┌
-    · ∙ ° ° • . * 
-    ┌─┬─┐
-    │ │ │
-    ├─┼─┤
-    └─┴─┘
-    '''
     #
     # Row 8
     #
