@@ -2,11 +2,13 @@ import random
 from classes import player
 from modules import art
 from classes import playerClass
-from classes import stationClass
+from classes import portClass
 from classes import shipClass
-stationClass = stationClass.stationClass()
+portClass = portClass.portClass()
 playerClass = playerClass.player()
 shipClass = shipClass.shipClass()
+
+# TODO: Change shipmenu 'P' to a function that docks you at a port, and gives an error if no port exists in this sector.
 
 
 class menus():
@@ -70,7 +72,7 @@ class menus():
             art.cd(13, '', "> Where to? (", '', False)
             art.cd(11, '', "?=Help", '', False)
             art.cd(13, '', "): ", '', False)
-            portattributes = stationClass.portAttributes(portinfo.portclass)
+            portattributes = portClass.portAttributes(portinfo.portclass)
             # print(portattributes)
             command = input("")
             match command:
@@ -155,7 +157,7 @@ class menus():
                     else:
                         print("")
                         art.cd(
-                            9, '', "With all the security personnel on this station, you are not surprised that you can't find a black market here.", 0, True)
+                            9, '', "With all the security personnel on this port, you are not surprised that you can't find a black market here.", 0, True)
                 case ("r" | "R"):  # Return to ship
                     # playerinfo = player.player(pid)
                     # print(playerinfo.pid)
@@ -352,31 +354,71 @@ class menus():
             art.cd(13, '', "): ", '', False)
             command = input("")
             match command:
+                # Navigation Column
                 case ("d" | "D"):  # Display Sector Summary
                     pass
                 case ("p" | "P"):  # Land on Port
+                    portClass.portDock(playerinfo)
+                    # TODO: Change this to a function that docks you at a port, and gives an error if no port exists in this sector.
 
-                    playerinfo.whereami = playerClass.changewhereami(
-                        playerinfo.pid, "port")
                     break
+                case ("m" | "M"):  # Move to a sector
+                    pass
+                case ("o" | "O"):  # Orbit a planet
+                    pass
+                case ("s" | "S"):  # Long Range Scan
+                    pass
+                case ("r" | "R"):  # Release Beacon
+                    pass
+                case ("w" | "W"):  # Tow Spacecraft
+                    pass
+                case ("n" | "N"):  # Move to NavPoint
+                    pass
                 case ("q" | "Q"):  # Quit the whole game.
                     print("")
                     art.cd(255, 27, "Live long and prosper.", 0, True)
                     print("")
                     quit()
+                # Computer Column
+                case ("c" | "C"):  # Onboard Computer
+                    pass
+                case ("x" | "X"):  # Transporter Pad
+                    pass
+                case ("i" | "I"):  # Ship Information
+                    pass
+                case ("t" | "T"):  # Corporate Menu
+                    pass
+                case ("u" | "U"):  # Use Genesis Torpedo
+                    pass
+                case ("j" | "J"):  # Jettison Cargo
+                    pass
+                case ("b" | "B"):  # Inderdict Control
+                    pass
+                case "!":  # Main Menu Help
+                    pass
+                case ("z" | "Z"):  # Documentation
+                    pass
+                # Tactical Column
+                case ("a" | "A"):  # Attack Enemy Ship
+                    pass
+                case ("e" | "E"):  # Subspace Etherprobes
+                    pass
+                case ("f" | "F"):  # Take or Leave Fighters
+                    pass
+                case ("g" | "G"):  # Show Deployed Fighters
+                    pass
+                case ("h" | "H"):  # Handle Space Mines
+                    pass
+                case ("k" | "K"):  # Show Space Mines
+                    pass
+                case ("l" | "L"):  # Starport Constructionl
+                    pass
+                case ("y" | "Y"):  # Set Navpoints
+                    pass
+                case ("v" | "V"):  # View Game Status
+                    pass
 
                 case ('?' | ''):  # Help
-
-                    '''
-                    Characters from https://en.wikipedia.org/wiki/Code_page_437
-
-                    ░ ▒ ▓ █ ▄ ▀ ■ ▌▐ │ ┤ ╡ ╢ ╖ ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐ └ ┴ ┬ ├ ─ ┼ ╞ ╟ ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧ ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫ ╪ ┘ ┌
-                    · ∙ ° ° • . * 
-                    ┌─┬─┐
-                    │ │ │
-                    ├─┼─┤
-                    └─┴─┘
-                    '''
                     print("")
                     art.cd(9, 0, "<Help>", 0, True)
                     print("")
@@ -471,7 +513,7 @@ class menus():
                     art.cd(13, '', "> ", '', False)
                     art.cd(123, '', "Orbit a Planet   ", 0, False)
                     art.cd(13, '', " <", '', False)
-                    art.cd(10, '', "C", '', False)
+                    art.cd(10, '', "T", '', False)
                     art.cd(13, '', "> ", '', False)
                     art.cd(123, '', "Corporate Menu  ", 0, False)
                     art.cd(13, '', " <", '', False)

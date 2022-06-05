@@ -10,7 +10,7 @@ log = log.log()
 
 
 @dataclass
-class stationClass():
+class portClass():
     def __init__(self):
         pass
 
@@ -49,3 +49,22 @@ class stationClass():
             art.cd(9, '', "Could not load the port class. Quitting.")
             print("")
             quit()
+
+    def portDock(self, playerinfo):
+        # Check if there is a port in this sector. If not, show error message.
+        connection = db.stdb()
+        query = "SELECT * FROM `ports` WHERE `locationx` = '" + \
+                str(playerinfo.locationx)+"' AND `locationy` = '" + \
+            str(playerinfo.locationy)+"'"
+        # print(query)
+        results = db.query(connection, query)
+        if results:
+            # Show animation of port landing.
+
+            # Update player location
+            playerinfo.whereami = playerClass.changewhereami(
+                playerinfo.pid, "port")
+            # Update port last docked time.
+
+        else:
+            art.cd(9, 0, "There is no port in this sector, sir.", 0, True)

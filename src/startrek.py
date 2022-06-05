@@ -1,7 +1,7 @@
 # This is the game controller script.
 
 # Import the required modules.
-from classes import station
+from classes import port
 from classes import player
 from classes import ship
 from classes import log
@@ -53,10 +53,10 @@ while True:
         case _:
             if playerinfo.whereami == "port":
                 # Get the dock information using the location.
-                stationinfo = station.station(
+                portinfo = port.port(
                     playerinfo.locationx, playerinfo.locationy)
-                # print(stationinfo.portname)
-                menu.portmenu(stationinfo, playerinfo)
+                # print(portinfo.portname)
+                menu.portmenu(portinfo, playerinfo)
 
                 # if playerinfo.locationx == 0 and playerinfo.locationy == 0:
                 #     menu.spacedock(playerinfo)

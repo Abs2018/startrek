@@ -3,7 +3,7 @@ from mysql.connector import Error
 from modules import db
 
 
-class station():
+class port():
     def __init__(self, x, y):
         connection = db.stdb()
         query = "select * from `ports` where `locationx` = '" + \
