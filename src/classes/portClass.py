@@ -1,9 +1,11 @@
+from classes import log
 from dataclasses import dataclass
 import mysql.connector
 from mysql.connector import Error
 from modules import db
 from modules import art
-from classes import log
+from classes import playerClass
+playerClass = playerClass.player()
 log = log.log()
 # TODO:
 # *
@@ -59,12 +61,46 @@ class portClass():
         # print(query)
         results = db.query(connection, query)
         if results:
+            # Get Port Class
+            thisportclass = portClass.portGetClass(
+                playerinfo.locationx, playerinfo.locationy)
+            portname = portClass.portGetName(
+                playerinfo.locationx, playerinfo.locationy)
             # Show animation of port landing.
+            match thisportclass:
+                case 0:
+                    art.portAnimClass0(portname)
 
             # Update player location
             playerinfo.whereami = playerClass.changewhereami(
                 playerinfo.pid, "port")
+            # Get the last time and date that someone docked here, and assign XP as desired.
+
             # Update port last docked time.
 
         else:
             art.cd(9, 0, "There is no port in this sector, sir.", 0, True)
+
+    def portGetClass(locationx, locationy):
+        connection = db.stdb()
+        query = "SELECT `portclass` FROM `ports` WHERE `locationx` = '" + \
+                str(locationx)+"' AND `locationy` = '" + \
+            str(locationy)+"'"
+        # print(query)
+        results = db.query(connection, query)
+        if results:
+            for row in results:
+                portclass = row['portclass']
+        return portclass
+
+    def portGetName(locationx, locationy):
+        connection = db.stdb()
+        query = "SELECT `portname` FROM `ports` WHERE `locationx` = '" + \
+                str(locationx)+"' AND `locationy` = '" + \
+            str(locationy)+"'"
+        # print(query)
+        results = db.query(connection, query)
+        if results:
+            for row in results:
+                portname = row['portname']
+        return portname
