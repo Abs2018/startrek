@@ -76,7 +76,15 @@ class portClass():
                 playerinfo.pid, "port")
             # Get the last time and date that someone docked here, and assign XP as desired.
 
-            # Update port last docked time.
+            # If no one has docked:
+                # Check to see how long the game has been running by getting portid=1.createdate.
+            # If someone has docked before:
+                # Get the number of days it has been since someone docked
+
+            # If less than than 2 weeks, assign 2 points of XP
+            # If more than 2 weeks, assign the number of days in XP up to 50.
+
+            # Update port last docked time. Always an INSERT to keep track of port activity.
 
         else:
             art.cd(9, 0, "There is no port in this sector, sir.", 0, True)
