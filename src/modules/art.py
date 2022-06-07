@@ -1,5 +1,5 @@
 from colored import fg, bg, attr
-from os import system, name
+import os
 '''
     Characters from https://en.wikipedia.org/wiki/Code_page_437
 

@@ -400,31 +400,37 @@ def bb_main_menu():
                civilizations, ports, empires)
 
     def bigdark():
-        # Clear the Stars Table
-        connection = db.stdb()
-        query = "TRUNCATE `stars`"
-        db.query(connection, query)
-        # Clear the Planets Table
-        connection = db.stdb()
-        query = "TRUNCATE `planets`"
-        db.query(connection, query)
         # Clear the Civilizations Table
         connection = db.stdb()
         query = "TRUNCATE `civilizations`"
-        db.query(connection, query)
-        # Clear the Ports Table
-        connection = db.stdb()
-        query = "TRUNCATE `ports`"
-        db.query(connection, query)
-        # Clear the Players Table
-        connection = db.stdb()
-        query = "TRUNCATE `players`"
         db.query(connection, query)
         # Clear the Logs Table
         connection = db.stdb()
         query = "TRUNCATE `logs`"
         db.query(connection, query)
+        # Clear the Planets Table
+        connection = db.stdb()
+        query = "TRUNCATE `planets`"
+        db.query(connection, query)
+        # Clear the Players Table
+        connection = db.stdb()
+        query = "TRUNCATE `players`"
+        db.query(connection, query)
+        # Clear the Ports Last Docked Table
+        connection = db.stdb()
+        query = "TRUNCATE `portlastdocked`"
+        db.query(connection, query)
+        # Clear the Ports Table
+        connection = db.stdb()
+        query = "TRUNCATE `ports`"
+        db.query(connection, query)
+        # Clear the Ships Table
+        connection = db.stdb()
         query = "TRUNCATE `ships`"
+        db.query(connection, query)
+        # Clear the Stars Table
+        connection = db.stdb()
+        query = "TRUNCATE `stars`"
         db.query(connection, query)
 
         art.cd(23, '', "Once teeming with life, all the planets in the galaxy are no more. There shall never again be thought, love, or beauty experienced by anyone.", "reset", True)

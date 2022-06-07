@@ -11,6 +11,7 @@ class port():
         # print(query)
         results = db.query(connection, query)
         for row in results:
+            self.portid = row['portid']
             self.portclass = row['portclass']
             self.portname = row['portname']
             self.locationx = row['locationx']
