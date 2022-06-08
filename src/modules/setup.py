@@ -27,7 +27,7 @@ def setup():
 
     # Create User Table
     connection = db.stdb()
-    query = "CREATE TABLE `players` (`pid` int(24) NOT NULL, `callsign` varchar(128) NOT NULL, `fname` varchar(128) NOT NULL, `mname` varchar(128) NOT NULL, `lname` varchar(128) NOT NULL, `alignment` varchar(128) NOT NULL,`rank` int(4) NOT NULL, `branch` varchar(16) NOT NULL, `xp` int(128) NOT NULL, `kills` int(128) NOT NULL, `deaths` int(128) NOT NULL,`locationx` int(24) NOT NULL,`locationy` int(24) NOT NULL, `whereami` varchar(24) NOT NULL, `health` int(24) NOT NULL, `species` varchar(24) NOT NULL, `age` int(24) NOT NULL, `birthday` varchar(24) NOT NULL, `homeplanet` varchar(24) NOT NULL, `languages` varchar(24) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+    query = "CREATE TABLE `players` (`pid` int(24) NOT NULL, `callsign` varchar(128) NOT NULL, `fname` varchar(128) NOT NULL, `mname` varchar(128) NOT NULL, `lname` varchar(128) NOT NULL, `alignment` varchar(128) NOT NULL, `morality` varchar(16) NOT NULL,`rank` int(4) NOT NULL, `branch` varchar(16) NOT NULL, `xp` int(128) NOT NULL, `kills` int(128) NOT NULL, `deaths` int(128) NOT NULL,`locationx` int(24) NOT NULL,`locationy` int(24) NOT NULL, `whereami` varchar(24) NOT NULL, `health` int(24) NOT NULL, `species` varchar(24) NOT NULL, `age` int(24) NOT NULL, `birthday` varchar(24) NOT NULL, `homeplanet` varchar(24) NOT NULL, `languages` varchar(24) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
     db.query(connection, query)
 
     connection = db.stdb()
@@ -244,15 +244,15 @@ def setup():
 
     # Insert ships
     '''
-	Escape Pod
-	Class F Shuttle
-	Cargo Ship
-	Daedelus
-	Saladin
-	Reliant
-	Constitution
-	Federation
-	'''
+    Escape Pod
+    Class F Shuttle
+    Cargo Ship
+    Daedelus
+    Saladin
+    Reliant
+    Constitution
+    Federation
+    '''
     connection = db.stdb()
     shipclasses = [('*** Escape Pod ***', '27', '999', '2', 'Federation Shipyards', '1', '5', '1', '50', '25', '0', '0', '15', '50', '0', '0', '50', '0', '0', '1', '0', '0', '0', '0', '0', '1', '0.5', '0.5', '0', '0', '0', '0', '1', '0', '1', '0', '0', '1', '0', '0', '0', '0', '0', '500', '4246', '4700', '5000'), ('Saladin',
                                                                                                                                                                                                                                                                                                                             '2', '999', '2', 'Federation Shipyards', '20', '75', '30', '2500', '750', '5', '25', '100', '400', '0', '50', '0', '10', '10', '50', '5', '0', '5', '1500', '25', '5', '1', '1', '1', '1', '1', '1', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '10000', '1000', '20300', '10000'), ('Constitution',
@@ -275,3 +275,24 @@ def setup():
     db.query(connection, query)
 
     art.cd(31, '', "Finalizing ship blueprints.", "reset", True)
+
+    # Ranks table
+    connection = db.stdb()
+    query = "CREATE TABLE `ranks` (`rid` int(128) NOT NULL, `rankname` varchar(32) NOT NULL, `rankxp` int(16) NOT NULL, `empire` int(16) NOT NULL)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ranks` ADD PRIMARY KEY (`rid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `ranks` MODIFY `rid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    rankclasses = [('Private', '2', '1'), ('Private 1st Class', '4', '1'), ('Lance Corporal', '6', '1'), ('Corporal', '16', '1'), ('Sargeant', '32', '1'), ('Staff Sargeant', '64', '1'), ('Gunnery Sargeant', '128', '1'), ('1st Sargeant', '256', '1'), ('Sargeant Major', '512', '1'), ('Warrant Officer', '1024', '1'), ('Chief Warrant Officer', '2048', '1'), ('Ensign', '4096', '1'), ('Lieutenant J.G.', '8192', '1'), ('Lieutenant', '16384', '1'), ('Lieutenant Commander', '32768', '1'), ('Commander', '65536', '1'), ('Captain', '131072', '1'), ('Commodore', '262144', '1'), ('Rear Admiral', '524288', '1'), ('Vice Admiral', '1048576', '1'), ('Admiral', '2097152', '1'), ('Fleet Admiral', '4194304', '1'), ('Nuisance 3rd Class', '2', '2'),
+                   ('Nuisance 2nd Class', '4', '2'), ('Nuisance 1st Class', '6', '2'), ('Menace 3rd Class', '16', '2'), ('Menace 2nd Class', '32', '2'), ('Menace 1st Class', '64', '2'), ('Smuggler 3rd Class', '128', '2'), ('Smuggler 2nd Class', '256', '2'), ('Smuggler 1st Class', '512', '2'), ('Smuggler Savant', '1024', '2'), ('Robber', '2048', '2'), ('Terrorist', '4096', '2'), ('Pirate', '8192', '2'), ('Infamous Pirate', '16384', '2'), ('Notorious Pirate', '32768', '2'), ('Dread Pirate', '65536', '2'), ('Galactic Scourge', '131072', '2'), ('Enemy of the State', '262144', '2'), ('Enemy of the People', '524288', '2'), ('Enemy of Humankind', '1048576', '2'), ('Heinous Overlord', '2097152', '2'), ('Prime Evil', '4194304', '2')]
+    connection = db.stdb()
+    query = "INSERT INTO `ranks` (`rankname`, `rankxp`, `empire`) VALUES (%s, %s, %s)"
+    db.querymany(connection, query, rankclasses)
+
+    art.cd(32, '', "Organizing the rank and file.", "reset", True)

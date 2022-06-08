@@ -18,6 +18,7 @@ class player():
                 self.mname = row['mname']
                 self.lname = row['lname']
                 self.alignment = row['alignment']
+                self.morality = row['morality']
                 self.rank = row['rank']
                 self.branch = row['branch']
                 self.xp = row['xp']

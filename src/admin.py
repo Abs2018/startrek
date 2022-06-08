@@ -171,6 +171,7 @@ def user_menu():
                         mname = row['mname']
                         lname = row['lname']
                         alignment = row['alignment']
+                        morality = row['morality']
                         rank = row['rank']
                         branch = row['branch']
                         xp = row['xp']
@@ -199,6 +200,8 @@ def user_menu():
                                 lname = playerClass.changelname(pid)
                             case ('a' | 'A'):
                                 alignment = playerClass.changealignment(pid)
+                            case ('j' | 'J'):
+                                morality = playerClass.changemorality(pid)
                             case ('r' | 'R'):
                                 rank = playerClass.changerank(pid)
                             case ('b' | 'B'):
@@ -269,7 +272,14 @@ def user_menu():
                                 art.cd(5, '', "> ", "", False)
                                 art.cd('light_cyan', '',
                                        "Alignment:\t\t", "", False)
-                                art.cd(2, '', alignment, "", True)
+                                art.cd(2, '', str(alignment), "", True)
+                                # Morality
+                                art.cd(5, '', "<", "", False)
+                                art.cd('light_cyan', '', "J", "", False)
+                                art.cd(5, '', "> ", "", False)
+                                art.cd('light_cyan', '',
+                                       "Morality:\t\t", "", False)
+                                art.cd(2, '', str(morality), "", True)
                                 # Rank
                                 #! Do we need Rank? Can't we just calculate it from XP?
                                 art.cd(5, '', "<", "", False)

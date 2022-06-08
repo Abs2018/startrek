@@ -8,8 +8,6 @@ portClass = portClass.portClass()
 playerClass = playerClass.player()
 shipClass = shipClass.shipClass()
 
-# TODO: Change shipmenu 'P' to a function that docks you at a port, and gives an error if no port exists in this sector.
-
 
 class menus():
     def __init__(self):
@@ -355,12 +353,10 @@ class menus():
             command = input("")
             match command:
                 # Navigation Column
-                case ("d" | "D"):  # Display Sector Summary
+                case ("d" | "D" | ''):  # Display Sector Summary
                     pass
                 case ("p" | "P"):  # Land on Port
                     portClass.portDock(playerinfo)
-                    # TODO: Change this to a function that docks you at a port, and gives an error if no port exists in this sector.
-
                     break
                 case ("m" | "M"):  # Move to a sector
                     pass
@@ -418,7 +414,7 @@ class menus():
                 case ("v" | "V"):  # View Game Status
                     pass
 
-                case ('?' | ''):  # Help
+                case '?':  # Help
                     print("")
                     art.cd(9, 0, "<Help>", 0, True)
                     print("")

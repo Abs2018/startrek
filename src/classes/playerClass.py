@@ -1,3 +1,4 @@
+from audioop import add
 from classes import player
 from classes import shipClass
 from dataclasses import dataclass
@@ -120,7 +121,8 @@ class player():
                     branch = ""
         # Save the player name.
         alignment = "Federation"
-        rank = 1
+        morality = 0
+        rank = 0
         xp = 0
         kills = 0
         deaths = 0
@@ -135,8 +137,8 @@ class player():
         languages = "English"
         # Create the player
         connection = db.stdb()
-        query = "INSERT INTO `players` (`callsign`, `fname`, `mname`, `lname`, `alignment`, `rank`, `branch`, `xp`, `kills`, `deaths`, `locationx`, `locationy`, `whereami`, `health`, `species`, `age`, `birthday`, `homeplanet`, `languages`) VALUES ('"+str(callsign)+"', '"+str(fname)+"', '"+str(mname)+"', '"+str(
-            lname)+"', '"+str(alignment)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
+        query = "INSERT INTO `players` (`callsign`, `fname`, `mname`, `lname`, `alignment`, `morality`, `rank`, `branch`, `xp`, `kills`, `deaths`, `locationx`, `locationy`, `whereami`, `health`, `species`, `age`, `birthday`, `homeplanet`, `languages`) VALUES ('"+str(callsign)+"', '"+str(fname)+"', '"+str(mname)+"', '"+str(
+            lname)+"', '"+str(alignment)+"', '"+str(morality)+"', '"+str(rank)+"', '"+str(branch)+"', '"+str(xp)+"', '"+str(kills)+"', '"+str(deaths)+"', '"+str(locationx)+"', '"+str(locationy)+"', '"+str(whereami)+"', '"+str(health)+"', '"+str(species)+"', '"+str(age)+"', '"+str(birthday)+"', '"+str(homeplanet)+"', '"+str(languages)+"')"
         # print(query)
         db.query(connection, query)
 
@@ -233,6 +235,20 @@ class player():
         db.query(connection, query)
         return alignment
 
+    def changemorality(self, pid):
+        while True:
+            print("")
+            art.cd('light_cyan', '', "New Morality:", 0, False)
+            morality = input(" ")
+            if morality:
+                break
+        connection = db.stdb()
+        query = "UPDATE `players` SET `morality`='" + \
+            morality+"' WHERE `pid`='"+str(pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        return morality
+
     def changerank(self, pid):
         while True:
             print("")
@@ -261,7 +277,63 @@ class player():
         db.query(connection, query)
         return branch
 
+    def getxp(pid):
+        connection = db.stdb()
+        query = "SELECT `xp` FROM `players` WHERE `pid` = '" + \
+            str(pid)+"'"
+        # print(query)
+        result = db.query(connection, query)
+        if result:
+            for row in result:
+                xp = row['xp']
+        return xp
+
+    def addxp(self, playerinfo, addxp):
+
+        curxp = player.getxp(playerinfo.pid)
+        #print("Current XP: "+str(curxp))
+        curxp = curxp + addxp
+        #print("New XP: "+str(curxp))
+        connection = db.stdb()
+        query = "UPDATE `players` SET `xp`='" + \
+            str(curxp)+"' WHERE `pid`='"+str(playerinfo.pid)+"'"
+        # print(query)
+        db.query(connection, query)
+        # Check for rank promotion
+        currank = playerinfo.rank
+        curmorality = playerinfo.morality
+        # If 0 or above, they are law-abiding federation citizens.
+        if int(curmorality) >= 0:
+            empire = 1
+        else:  # Otherwise they are criminals.
+            empire = 2
+
+        # Get the rank from the ranks table
+        connection = db.stdb()
+        query = "SELECT * FROM `ranks` WHERE `empire`='"+str(empire) + \
+            "' AND `rankxp` <= '"+str(curxp)+"' ORDER BY `rid` DESC LIMIT 1"
+        # print(query)
+        results = db.query(connection, query)
+        # print(results)
+        if results:
+            for row in results:
+                newrank = row['rid']
+                newrankname = row['rankname']
+        else:
+            newrank = currank
+        if currank != newrank:
+            # Update the player rank
+            connection = db.stdb()
+            query = "UPDATE `players` SET `rank`='" + \
+                str(newrank)+"' WHERE `pid`='"+str(playerinfo.pid)+"'"
+            # print(query)
+            db.query(connection, query)
+            art.cd(9, '', "Congratulations! You've just been promoted to " +
+                   str(newrankname)+"!", 0, True)
+        return newrank
+
     # Changes the total XP
+
     def changexp(self, pid):
         while True:
             print("")

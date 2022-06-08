@@ -177,7 +177,7 @@ class portClass():
                         lastdocked = [lastdockeddate[0],
                                       lastdockeddate[1], lastdocked[0], lastdocked[1], lastdocked[2]]
                         # Calculate XP. If no one for 14 days, give 2 points, otherwise, give an additional point for every subsequent day.
-                        if int(lastdockeddate[0]) <= 14:
+                        if int(lastdockeddate[0]) < 14:
                             xp = 0
                         else:
                             xp = (int(lastdockeddate[0]) + 2) - 14
@@ -217,18 +217,18 @@ class portClass():
                                 year = " years"
                             else:
                                 year = " year"
-                            # Calculate the number of years.
-                            years = int(lastdocked[0])/365
-                            years = int(math.floor(years))
+                        # Calculate the number of years.
+                        years = int(lastdocked[0])/365
+                        years = int(math.floor(years))
                         if int(lastdocked[0]) > 30:  # Months is true
-                            # Calculate the number of months.
-                            months = int(lastdocked[0])/30
-                            months = int(months) % 12
-                            months = int(math.floor(months))
                             if int(months) == 1:
                                 month = " month"
                             else:
                                 month = " months"
+                        # Calculate the number of months.
+                        months = int(lastdocked[0])/30
+                        months = int(months) % 12
+                        months = int(math.floor(months))
                         # Calculate remaining days.
                         days = int(lastdocked[0]) - \
                             (int(years)*365)-(int(months)*30)
@@ -274,7 +274,7 @@ class portClass():
                 art.cd(2, "", " ago.", 0, True)
                 # Show XP Message, if last docked date is greater than 14 days.
                 # xp = lastdockeddate[0]
-                if int(xp) >= 14:
+                if int(xp) >= 1:
                     # Print the amount of XP that is being awarded.
                     art.cd(
                         2, '', "For being the first visitor in a while, you receive ", 0, False)
@@ -290,17 +290,21 @@ class portClass():
                         lastdockeddate = row['createdate']
                 art.cd(2, "", "No current ship docking log on file.", 0, True)
                 lastdockeddate = dockedtimedelta(lastdockeddate)
+                # print(lastdockeddate)
+                # ?This is the dataset.
+                # ['0:00:11.123315']
+                # ['1', 'day,', '0:03:05.069710']
                 # Calculate XP
-                xp = lastdockeddate[0]
-                if int(xp) > 50:
-                    xp = 50
-                elif int(xp) == 0:
-                    # ! This is meant to give 1 xp point if the server is less than 24 hours old. However, what happens if the result of timedelta doesn't give the days as '0' when run?
-                    # * This is meant to give 1 xp point if the server is less than 24 hours old. However, what happens if the result of timedelta doesn't give the days as '0' when run?
-                    # ? This is meant to give 1 xp point if the server is less than 24 hours old. However, what happens if the result of timedelta doesn't give the days as '0' when run? Delete the galaxy and try again.
-                    xp = 1
+                datelistsize = len(lastdockeddate)
+                match datelistsize:
+                    case 1:
+                        xp = 2
+                    case 3:
+                        xp = lastdockeddate[0]
+                        if int(xp) > 50:
+                            xp = 50
                 art.cd(2, '', "For finding this unused port, you receive ", 0, False)
-                art.cd(11, '', xp, 0, False)
+                art.cd(11, '', str(xp), 0, False)
                 art.cd(2, '', " experience ", 0, False)
                 if int(xp) == 1:
                     art.cd(2, '', "point.", 0, True)
@@ -308,8 +312,7 @@ class portClass():
                     art.cd(2, '', "points.", 0, True)
 
             # Give the user their XP
-            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! START HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+            playerinfo.rank = playerClass.addxp(playerinfo, xp)
             # Update port last docked time. Always an INSERT to keep track of port activity.
             connection = db.stdb()
             query = "INSERT INTO `portlastdocked` (`portid`,`pid`)  VALUES ('" + \
