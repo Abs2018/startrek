@@ -1,0 +1,38 @@
+1. Set classes of ships.
+
+The purpose of this will be to change the menus. For example, on a small ship, you are the only crew, so you control everything from scanning, to piloting, to repair. On a larger ship, you will have crew, so you just give the orders. Also, crew should be able to speak and provide opinions on tasks.
+
+Ship class sizes:
+
+- X-Small: shuttle, escape pod
+- Small: Scout
+- Medium: Reliant,
+- Large: 
+- X-Large: Constitution, Federation
+
+2. Ship equipment classes.
+	- Not able to scan as far
+	- Takes longer to warp
+	- Scans don't show everything
+
+3. Ship systems. The systems should be able to be damaged. As they become more damaged, you will lose more crew, which results in less efficiency.
+	- Bridge
+	- Life support
+	- Scanners
+		- Long Range
+		- Short Range
+		- Probes
+	- Engines
+		- Impulse
+		- Warp
+	- Navigation
+	- Communications
+	- Computer
+	- Shields
+	- Weapons
+		- Phasers
+		- Photon Torpedoes
+	- Tractor Beam
+
+3. Alien race special menu options.
+   eg: betazoid, can tell if someone is lying. Vulcan: nerve pinch, etc.
