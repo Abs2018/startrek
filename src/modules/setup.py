@@ -3,6 +3,43 @@ import mysql.connector
 from mysql.connector import Error
 from modules import db
 from modules import art
+import os
+import platform
+from csv import reader
+
+# This module will read the CSV files in the data directory and import the values in them to their respective tables.
+
+
+def moduleload(folder, query):
+    # Get the path for the system
+    opsys = (platform.system())
+    modpath = str(os.getcwd())
+    if opsys == "Windows":  # I believe Windows is the only OS that uses \
+        slash = "\\"
+    else:  # All other OS's use /.
+        slash = "/"
+    modpath = modpath+slash+'data'+slash+folder+slash
+    # print(modpath)
+    # Define the list to be saved
+    folderclass = []
+    # Get the file listing in the folder variable and put it in a list
+    for mod in os.listdir(modpath):
+        sample = modpath + '_Sample.txt'
+        # Check if current mod is a file
+        if os.path.isfile(os.path.join(modpath, mod)):
+            # Avoid the sample file
+            if os.path.join(modpath, mod) != sample:
+                # Open each file and save its contents in a dictionary
+                f = open(os.path.join(modpath, mod), "r", encoding="utf8")
+                csv_reader = reader(f)
+                for row in csv_reader:
+                    folderclass.append(row)
+                f.close()
+    # print(folderclass)
+    # Insert into database
+    connection = db.stdb()
+    db.querymany(connection, query, folderclass)
+
 
 # First time setup
 
@@ -21,9 +58,12 @@ def setup():
         # print(f"The error '{e}' occurred")
         connection = "FALSE"
 
+    colour = 23
+
     query = "CREATE DATABASE IF NOT EXISTS `startrek`"
     db.query(connection, query)
-    art.cd(23, '', "Game database created.", "reset", True)
+    art.cd(colour, '', "Game database created.", "reset", True)
+    colour = colour + 1
 
     # Create User Table
     connection = db.stdb()
@@ -38,8 +78,8 @@ def setup():
     query = "ALTER TABLE `players` MODIFY `pid` int(24) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(24, '', "User Directory generated.", "reset", True)
-
+    art.cd(colour, '', "User Directory generated.", "reset", True)
+    colour = colour + 1
     # Create High Scores Table
     connection = db.stdb()
     query = "CREATE TABLE `highscores` (`hsid` int(2) NOT NULL, `pid` int(9) NOT NULL, `score` int(64) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
@@ -53,7 +93,8 @@ def setup():
     query = "ALTER TABLE `highscores` MODIFY `hsid` int(2) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(25, '', "High Scores Board built.", "reset", True)
+    art.cd(colour, '', "High Scores Board built.", "reset", True)
+    colour = colour + 1
 
     # ? Is this table needed, or can we just store the sector coordinates with the stars and planets?
     #! .....................UP FOR REVIEW.....................
@@ -70,7 +111,8 @@ def setup():
     query = "ALTER TABLE `galaxy` MODIFY `secid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(25, '', "Galactic Fabric woven.", "reset", True)
+    art.cd(colour, '', "Galactic Fabric woven.", "reset", True)
+    colour = colour + 1
 
     # Create Star Types Table
     connection = db.stdb()
@@ -86,11 +128,8 @@ def setup():
     db.query(connection, query)
 
     connection = db.stdb()
-    starclasses = [('1', 'O', '#9bb0ff'), ('2', 'B', '#aabfff'), ('3', 'A', '#cad7ff'),
-                   ('4', 'F', '#f8f7ff'), ('5', 'G', '#fff4ea'), ('6', 'K', '#ffd2a1'), ('7', 'M', '#ffcc6f')]
-
-    query = "INSERT INTO `starclass` (`scid`, `starclass`, `colour`) VALUES (%s, %s, %s)"
-    db.querymany(connection, query, starclasses)
+    query = "INSERT INTO `starclass` (`starclass`, `colour`) VALUES (%s, %s)"
+    moduleload('starclass', query)
 
     # Create the Stars table
     #! Not sure if we need secid. See the 'Galaxy' table above.
@@ -106,7 +145,8 @@ def setup():
     query = "ALTER TABLE `stars` MODIFY `sid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(26, '', "Stellar matter formed.", "reset", True)
+    art.cd(colour, '', "Stellar matter formed.", "reset", True)
+    colour = colour + 1
 
     # Create Planet Types Table
     connection = db.stdb()
@@ -121,11 +161,8 @@ def setup():
     query = "ALTER TABLE `planetclass` MODIFY `pcid` int(2) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    connection = db.stdb()
-    planetclasses = [("1", "D", "An uninhabitable planetoid, moon, or small planet with little to no atmosphere. Some were viable candidates for terraforming.", "249"), ("2", "H", "Generally uninhabitable for Humans, though viable for Sheliak.", "172"), ("3", "J", "A type of gas giant.", "226"), ("4", "K", "	Adaptable for Humans by use of artificial biospheres.", "19"), ("5", "L", "Marginally habitable, with vegetation but usually no animal life.", "22"), (
-        "6", "M", "Earth-like, with atmospheres containing oxygen and, typically, nucleogenic particles. Largely habitable for humanoid life forms.", "46"), ("7", "N", "A sulfuric planet.", "100"), ("8", "R", "A rogue planet, not as habitable as a terrestrial planet.", "237"), ("9", "T", "A type of gas giant.", "179"), ("10", "Y", "A world with a toxic atmosphere and surface temperatures exceeding 500 Kelvin. Prone to thermionic radiation discharges.", "196")]
-    query = "INSERT INTO `planetclass` (`pcid`, `planetclass`, `description`, `colour`) VALUES (%s, %s, %s, %s)"
-    db.querymany(connection, query, planetclasses)
+    query = "INSERT INTO `planetclass` (`planetclass`, `description`, `colour`) VALUES (%s, %s, %s)"
+    moduleload('planetclass', query)
 
     # Create the Planets table
     #! Not sure if we need secid. See the 'Galaxy' table above.
@@ -141,7 +178,8 @@ def setup():
     query = "ALTER TABLE `planets` MODIFY `pid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(27, '', "Aligning planet orbits.", "reset", True)
+    art.cd(colour, '', "Aligning planet orbits.", "reset", True)
+    colour = colour + 1
 
     # Create the Civilizations table
     connection = db.stdb()
@@ -156,7 +194,8 @@ def setup():
     query = "ALTER TABLE `civilizations` MODIFY `cid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(28, '', "Creating the conditions for life.", "reset", True)
+    art.cd(colour, '', "Creating the conditions for life.", "reset", True)
+    colour = colour + 1
 
     # Create the Logs table
     connection = db.stdb()
@@ -171,7 +210,27 @@ def setup():
     query = "ALTER TABLE `logs` MODIFY `lid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(29, '', "Starting the historic record.", "reset", True)
+    art.cd(colour, '', "Starting the historic record.", "reset", True)
+    colour = colour + 1
+
+    # Create the Race table
+    connection = db.stdb()
+    query = "CREATE TABLE `raceclass` (`rid` int(128) NOT NULL, `raceclass` varchar(128) NOT NULL, `description` varchar(4096), `strength` int(3) NOT NULL, `endurance` int(3) NOT NULL, `intellect` varchar(3) NOT NULL, `dexterity` varchar(3) NOT NULL, `charisma` varchar(3) NOT NULL, `luck` varchar(3) NOT NULL, `psionic` varchar(3) NOT NULL, `homeworld` varchar(128) NOT NULL, `empire` varchar(128) NOT NULL)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `raceclass` ADD PRIMARY KEY (`rid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `raceclass` MODIFY `rid` int(128) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    query = "INSERT INTO `raceclass` (`raceclass`, `description`, `strength`, `endurance`, `intellect`, `dexterity`, `charisma`, `luck`, `psionic`, `homeworld`, `empire`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    moduleload('raceclass', query)
+
+    art.cd(colour, '', "Evolving species.", "reset", True)
+    colour = colour + 1
 
     # Create Port Classes Table
     '''
@@ -194,12 +253,8 @@ def setup():
     '''
     class, orecap, organicscap, equipmentcap, theater, bank, techdealer, police, shipyards, bar, library, blackmarket
     '''
-    connection = db.stdb()
-    portclasses = [('0', '10000', '10000', '10000', '1', '1', '1', '1', '1', '0', '1', '0', '0', "What never ceases to amaze you is the massive scale of the Class 0 port. There is enough space to house over 15,000 officers and up to 35,000 visitors at any given time. Nearly any service you can think of exists on a Class 0 port. You return your focus to docking your ship, as you don't want to be known as the person who scratched their paint on the station."), ('1', '8500', '8500', '8500', '0', '1', '1', '1', '0', '0', '0', '0', '0', "Class 1 ports serve as major regional hubs in deep space. With large cargo space, they are excellent trade centers for traders looking to make a profit. Most services you can require are found on a Class 1 port."), ('2', '7500', '7500', '7500', '0', '1', '1', '1', '0', '0', '0', '0', '0', "Class 2"),
-                   ('3', '7000', '7000', '7000', '0', '0', '0', '0', '0', '0', '0', '0', '0', "Class 3"), ('4', '6000', '6000', '6000', '0', '0', '0', '0', '0', '0', '0', '0', '0', "Class 4"), ('5', '5000', '5000', '5000', '0', '0', '0', '0', '0', '0', '0', '0', '0', "Class 5"), ('6', '4000', '4000', '4000', '0', '0', '0', '0', '0', '0', '0', '0', '0', "Class 6"), ('7', '3000', '3000', '3000', '0', '0', '0', '0', '0', '0', '0', '0', '1', "Class 7"), ('8', '2000', '2000', '2000', '0', '0', '0', '0', '0', '0', '0', '0', '1', "Class 8"), ('9', '1000', '1000', '1000', '0', '0', '1', '0', '0', '1', '0', '1', '1', "The smallest station type in the galaxy is the Class 9, which can often be found in frontier space or near underdeveloped planets. The distance of these ports from well-regulated space makes them a haven for the...more shadowy citizens of the galaxy.")]
-
     query = "INSERT INTO `portclass` (`portclass`, `orecap`, `organicscap`, `equipmentcap`, `theater`, `bank`, `techdealer`, `police`, `shipyards`, `tavern`, `library`, `blackmarket`, `bar`, `description`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    db.querymany(connection, query, portclasses)
+    moduleload('portclass', query)
 
     # Create the Ports table
     connection = db.stdb()
@@ -227,7 +282,8 @@ def setup():
     query = "ALTER TABLE `portlastdocked` MODIFY `ldapid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(30, '', "Placing safe harbours throughout the galaxy.", "reset", True)
+    art.cd(colour, '', "Placing safe harbours throughout the galaxy.", "reset", True)
+    colour = colour + 1
 
     # Ship Class table
     connection = db.stdb()
@@ -253,13 +309,8 @@ def setup():
     Constitution
     Federation
     '''
-    connection = db.stdb()
-    shipclasses = [('*** Escape Pod ***', '27', '999', '2', 'Federation Shipyards', '1', '5', '1', '50', '25', '0', '0', '15', '50', '0', '0', '50', '0', '0', '1', '0', '0', '0', '0', '0', '1', '0.5', '0.5', '0', '0', '0', '0', '1', '0', '1', '0', '0', '1', '0', '0', '0', '0', '0', '500', '4246', '4700', '5000'), ('Saladin',
-                                                                                                                                                                                                                                                                                                                            '2', '999', '2', 'Federation Shipyards', '20', '75', '30', '2500', '750', '5', '25', '100', '400', '0', '50', '0', '10', '10', '50', '5', '0', '5', '1500', '25', '5', '1', '1', '1', '1', '1', '1', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '10000', '1000', '20300', '10000'), ('Constitution',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             '255', '27', '2', 'Federation Shipyards', '40', '150', '10000', '50000', '10000', '5', '50', '2000', '10000', '0', '125', '10', '10', '150', '150', '10', '0', '0', '1500', '5', '15', '1.5', '1.5', '1', '1', '1', '0', '1', '0', '0', '1', '1', '0', '0', '1', '0', '0', '0', '23000', '10000', '231000', '65000')]
-
     query = "INSERT INTO `shipclass` (`shipclassname`, `fgcolour`, `bgcolour`, `alignment`, `manufacturer`, `cargoholdsstart`, `cargoholdsmax`, `fightersstart`, `fightersmax`, `fighterattackforce`, `photontorpedoesstart`, `photontorpedoesmax`,  `shieldsstart`, `shieldsmax`, `minesstart`, `minesmax`, `minedisruptorsstart`, `minedisruptorsmax`, `markerbeaconsstart`, `markerbeaconsmax`, `genesistorpedoes`, `cloakingdevices`, `atomicdetonators`, `corbomitedevices`,`subspaceetherprobes`, `transporterrange`, `offensiveodds`, `defensiveodds`, `scannerdensity`, `scannerholo`, `transwarpdrive`, `fusiondrive`, `planetscanner`, `interdictorgenerator`, `usedasescapepod`, `carriesescapepod`, `escapepodclass`, `canlandonplanet`, `defensiveguardianbonus`, `requirefedcommission`, `requiredxp`, `requirecorporatestatus`, `requireceostatus`, `costofholdspace`, `costofdrive`, `costofcomputersystem`, `costofshipshull`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    db.querymany(connection, query, shipclasses)
+    moduleload('shipclass', query)
 
     # Ships table
     connection = db.stdb()
@@ -274,7 +325,8 @@ def setup():
     query = "ALTER TABLE `ships` MODIFY `shid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
-    art.cd(31, '', "Finalizing ship blueprints.", "reset", True)
+    art.cd(colour, '', "Finalizing ship blueprints.", "reset", True)
+    colour = colour + 1
 
     # Ranks table
     connection = db.stdb()
@@ -295,4 +347,5 @@ def setup():
     query = "INSERT INTO `ranks` (`rankname`, `rankxp`, `empire`) VALUES (%s, %s, %s)"
     db.querymany(connection, query, rankclasses)
 
-    art.cd(32, '', "Organizing the rank and file.", "reset", True)
+    art.cd(colour, '', "Organizing the rank and file.", "reset", True)
+    colour = colour + 1

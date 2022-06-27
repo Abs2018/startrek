@@ -1,0 +1,8 @@
+This is a CSV (Comma Seperated Value) file. This sample will show you the headers needed for the planetclass table.
+
+planetclass,description,colour
+
+colour refers to the Python module colored (https://pypi.org/project/colored/)
+
+Sample file entry:
+D,An uninhabitable planetoid, moon, or small planet with little to no atmosphere. Some were viable candidates for terraforming.,249

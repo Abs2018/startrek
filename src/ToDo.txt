@@ -10,6 +10,8 @@ Ship class sizes:
 - Large: 
 - X-Large: Constitution, Federation
 
+Ships will have a maximum tonnage that the equipment can add up to. If passing this tonnage, the ship's structural integrity field will not hold.
+
 2. Ship equipment classes.
 	- Not able to scan as far
 	- Takes longer to warp
@@ -36,3 +38,5 @@ Ship class sizes:
 
 3. Alien race special menu options.
    eg: betazoid, can tell if someone is lying. Vulcan: nerve pinch, etc.
+
+

@@ -122,57 +122,6 @@
                                     fore1 = shipname[0]
                                     back1 = shipname[1]
                                     style1 = shipname[2]
-
-                                    match fore1:
-                                        case 'bl':
-                                            fore1 = Fore.BLACK
-                                        case 'r':
-                                            fore1 = Fore.RED
-                                        case 'g':
-                                            fore1 = Fore.GREEN
-                                        case 'y':
-                                            fore1 = Fore.YELLOW
-                                        case 'b':
-                                            fore1 = Fore.BLUE
-                                        case 'm':
-                                            fore1 = Fore.MAGENTA
-                                        case 'c':
-                                            fore1 = Fore.CYAN
-                                        case 'w':
-                                            fore1 = Fore.WHITE
-                                        case '':
-                                            pass
-                                    match back1:
-                                        case 'bl':
-                                            back1 = Back.BLACK
-                                        case 'r':
-                                            back1 = Back.RED
-                                        case 'g':
-                                            back1 = Back.GREEN
-                                        case 'y':
-                                            back1 = Back.YELLOW
-                                        case 'b':
-                                            back1 = Back.BLUE
-                                        case 'm':
-                                            back1 = Back.MAGENTA
-                                        case 'c':
-                                            back1 = Back.CYAN
-                                        case 'w':
-                                            back1 = Back.WHITE
-                                        case '':
-                                            pass
-                                    match style1:
-                                        case 'd':
-                                            style1 = Style.DIM
-                                        case 'n':
-                                            style1 = Style.NORMAL
-                                        case 'b':
-                                            style1 = Style.BRIGHT
-                                        case 'r':
-                                            style1 = Style.RESET_ALL
-                                        case '':
-                                            pass
-                                    name = shipname[3]
                                     # Calculate ship cost.
                                     shipbasecost = int(shipclass.costofholdspace) + int(shipclass.costofdrive) + int(
                                         shipclass.costofcomputersystem) + int(shipclass.costofshipshull)
@@ -191,18 +140,6 @@
                                     print("")
                                     print("")
                                     # Print stats
-                                    print(2, '', "    Basic Hold Cost"+11, '', ":   "+14, '', f"{shipclass.costofholdspace}"+2, '', "\t  Initial Holds"+11, '',
-                                          ":   "+14, '', f"{shipclass.cargoholdsstart}"+2, '', "\t  Maximum Shields"+11, '', ":   "+14, '', f"{shipclass.shieldsmax}")
-                                    print(2, '', "    Main Drive Cost"+11, '', ":   "+14, '', f"{shipclass.costofdrive}"+2, '', "\t   Max Fighters" +
-                                          11, '', ":   "+14, '', f"{shipclass.fightersmax}"+2, '', "\t   Offensive Odds"+11, '', ":   "+14, '', f"N/A")
-                                    print(2, '', "      Computer Cost"+11, '', ":   "+14, '', f"{shipclass.costofcomputersystem}"+2, '',
-                                          "\t Turns Per Warp"+11, '', ":   "+14, '', f"N/A"+2, '', "\t   Defensive Odds"+11, '', ":   "+14, '', f"N/A")
-                                    print(2, '', "     Ship Hull Cost"+11, '', ":   "+14, '', f"{shipclass.costofshipshull}"+2, '', "\t       Mine Max"+11, '',
-                                          ":   "+14, '', f"{shipclass.minesmax}"+2, '', "\t       Beacon Max"+11, '', ":   "+14, '', f"{shipclass.markerbeaconsmax}")
-                                    print(2, '', "     Ship Base Cost"+11, '', ":   "+14, '', str(shipbasecost)+2, '', "\t    Genesis Max"+11, '', ":   "+14,
-                                          '', f"{shipclass.genesistorpedoes}"+2, '', "\t  Long Range Scan"+11, '', ":   "+14, '', f"{shipclass.cargoholdsstart}")
-                                    print(2, '', "Max Figs Per Attack"+11, '', ":   "+14, '', f"{shipclass.fighterattackforce}"+2, '', "\tTranswarp Drive"+11, '',
-                                          ":   "+14, '', f"{shipclass.transwarpdrive}"+2, '', "\t   Planet Scanner"+11, '', ":   "+14, '', f"{shipclass.planetscanner}")
                                     print(2, '', "      Maximum Holds"+11, '', ":   "+14, '', f"{shipclass.cargoholdsmax}"+2, '', "\tTransport Range"+11,
                                           '', ":   "+14, '', f"{shipclass.cargoholdsmax}"+2, '', "\t  Photon Missiles"+11, '', ":   "+14, '', ptlauncher)
                                 elif found == False:

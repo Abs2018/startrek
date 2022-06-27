@@ -1,0 +1,6 @@
+This is a CSV (Comma Seperated Value) file. This sample will show you the headers needed for the starclass table.
+
+starclass,colour
+
+Sample file entry:
+O,#9bb0ff

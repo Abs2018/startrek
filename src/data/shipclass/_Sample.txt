@@ -1,0 +1,6 @@
+This is a CSV (Comma Seperated Value) file. This sample will show you the headers needed for the shipclass table.
+
+shipclassname,fgcolour,bgcolour,alignment,manufacturer,cargoholdsstart,cargoholdsmax,fightersstart,fightersmax,fighterattackforce,photontorpedoesstart,photontorpedoesmax,shieldsstart,shieldsmax,minesstart,minesmax,minedisruptorsstart,minedisruptorsmax,markerbeaconsstart,markerbeaconsmax,genesistorpedoes,cloakingdevices,atomicdetonators,corbomitedevices,subspaceetherprobes,transporterrange,offensiveodds,defensiveodds,scannerdensity,scannerholo,transwarpdrive,fusiondrive,planetscanner,interdictorgenerator,usedasescapepod,carriesescapepod,escapepodclass,canlandonplanet,defensiveguardianbonus,requirefedcommission,requiredxp,requirecorporatestatus,requireceostatus,costofholdspace,costofdrive,costofcomputersystem,costofshipshull
+
+Sample file entry:
+*** Escape Pod ***,27,999,2,Federation Shipyards,1,5,1,50,25,0,0,15,50,0,0,50,0,0,1,0,0,0,0,0,1,0.5,0.5,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,500,4246,4700,5000

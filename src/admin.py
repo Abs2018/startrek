@@ -1,8 +1,11 @@
 # This is the admin app.
 
 # Import the required modules.
+from posixpath import split
+from tracemalloc import start
 import mysql.connector
 from mysql.connector import Error
+import os
 from modules import db
 from modules import art
 from modules import setup
@@ -63,9 +66,15 @@ def adm_main_menu():
     art.cd(5, '', "<", "", False)
     art.cd('light_cyan', '', "E", "", False)
     art.cd(5, '', "> ", "", False)
-    art.cd(2, '', "Empire Editor", "", True)
+    art.cd(2, '', "Empire Editor", "", False)
+
+    art.cd(5, '', "\t<", "", False)
+    art.cd('light_cyan', '', "G", "", False)
+    art.cd(5, '', "> ", "", False)
+    art.cd(2, '', "Galaxy Browser", "", False)
 
     # Row ??
+    print("")
     print("")
     art.cd(5, '', "<", "", False)
     art.cd('226', '', "Q", "", False)
@@ -92,6 +101,9 @@ def adm_main_menu():
             case ('e' | 'E'):
                 # Empire editor.
                 empire_menu()
+            case ('g' | 'G'):
+                # Galaxy Viewer.
+                galaxybrowser()
             case ('s' | 'S'):
                 # Ship viewer.
                 ship_menu()
@@ -466,6 +478,553 @@ def sector_menu():
         match command:
             case ('q' | 'Q'):
                 adm_main_menu()
+
+
+def galaxybrowser():
+    # Ensure that the galaxy has been created. Else quit.
+    # Get the starting coordinates to view the galaxy with.
+    print("")
+    art.cd(5, '', "[Galaxy Viewer] ", '', False)
+    art.cd('light_cyan', '',
+           "Which sector should we start in? ", 0, False)
+    art.cd(226, '', "(0,0)", '', False)
+    art.cd('light_cyan', '', ": ", 0, False)
+    startingpoint = input(" ")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    if startingpoint == "":
+        locationx = 0
+        locationy = 0
+    else:
+        startingpoint = startingpoint.split(',')
+        locationx = int(startingpoint[0].strip())
+        locationy = int(startingpoint[1].strip())
+    # Calculate boundaries.
+    edgeleft = locationx - 10
+    edgeright = locationx + 11
+    edgetop = locationy + 2
+    edgebottom = locationy - 3
+    # print("The center of the map is "+str(locationx)+", "+str(locationy))
+    # print("The top left boundary is "+str(edgeleft)+", "+str(edgetop))
+    # print("The top right boundary is "+str(edgeright)+", "+str(edgetop))
+    # print("The bottom left boundary is "+str(edgeleft)+", "+str(edgebottom))
+    # print("The bottom right boundary is "+str(edgeright)+", "+str(edgebottom))
+    # * Start displaying the sensors
+    # Row 1
+    art.cd(2, '', "╔═══════════════════════════════════════════════════════╦═══════════════════════════════════════════════════════╗", "", True)
+    # Row 2-4: Display the X axis
+    # Three arrays: xtop, xmid, xbot. They will hold the values for each column in this row.
+    xtop = ["   "]
+    xmid = ["   "]
+    xbot = ["   "]
+    for curx in range(edgeleft, edgeright):  # For pointer in range -10 - 11
+        seclength = len(str(curx))  # Get the length of the pointer
+        #! Because -100 shows strlen of 4.
+        # print("")
+        # print("Curx is: "+str(curx))
+        # print("Before: "+str(seclength))
+        if curx < 0 and curx >= -999:
+            seclength = 3
+        elif curx <= -1000 and curx >= -9999:
+            seclength = 4
+        elif curx <= -10000 and curx >= -99999:
+            seclength = 5
+        elif curx <= -100000 and curx >= -999999:
+            seclength = 6
+        elif curx <= -1000000 and curx >= -9999999:
+            seclength = 7
+        elif curx <= -10000000 and curx >= -99999999:
+            seclength = 8
+        elif curx <= -100000000 and curx >= -999999999:
+            seclength = 9
+        # print("After: "+str(seclength))
+
+        match seclength:  # Match the length of the pointer.
+            case seclength if seclength <= 3:  # From 0 - 999
+                # Since the length is 3, we will never have anything in the top or bottom rows and we append blanks to the list.
+                xtop.append("     ")
+                xbot.append("     ")
+                # If the number is less than -10 and less than 10:
+                if curx > -10 and curx < 10:
+                    # If a negative number, convert it to positive.
+                    if curx < 0:
+                        curx = curx * -1
+                    # Append the number to the list.
+                    xmid.append("  "+str(curx)+"  ")
+                # If the number is between 10 and 99
+                elif curx >= 10 and curx < 100:  # Positive Formatter
+                    # Append the number to the list.
+                    xmid.append("  "+str(curx)+" ")
+                # If the number is between -10 and -99
+                elif curx > -100 and curx <= -10:  # Negative Formatter
+                    # If a negative number, convert it to positive.
+                    curx = curx * -1
+                    # Append the number to the list.
+                    xmid.append("  "+str(curx)+" ")
+                elif curx >= 100:  # Positive Formatter
+                    # Append the number to the list.
+                    xmid.append(" "+str(curx)+" ")
+                elif curx <= -100:  # Negative Formatter
+                    # If a negative number, convert it to positive.
+                    curx = curx * -1
+                    # Append the number to the list.
+                    xmid.append(" "+str(curx)+" ")
+                else:
+                    print("Something went wrong. Quitting.")
+                    quit()
+            case seclength if seclength >= 4 and seclength <= 6:  # From 1000 - 999999
+                # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
+                if curx < 0:
+                    curx = curx*-1
+                if seclength == 4:
+                    # 1000
+                    rowtop = str(curx)[0:1]
+                    prefix = "   "
+                    suffix = " "
+                elif seclength == 5:
+                    # 10000
+                    rowtop = str(curx)[0:2]
+                    prefix = "  "
+                    suffix = " "
+                elif seclength == 6:
+                    # 100000
+                    rowtop = str(curx)[0:3]
+                    prefix = " "
+                    suffix = " "
+                rowmid = str(curx)[-3:]
+                xtop.append(prefix+str(rowtop)+suffix)
+                xmid.append(" "+str(rowmid)+" ")
+                xbot.append("     ")
+            case seclength if seclength >= 7 and seclength <= 9:  # From 1000000 - 999999999
+                # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
+                if curx < 0:
+                    curx = curx*-1
+                if seclength == 7:
+                    # 1 000 000
+                    rowtop = str(curx)[0:1]
+                    prefix = "   "
+                    suffix = " "
+                    rowmid = str(curx)[1:4]
+                elif seclength == 8:
+                    # 10 000 000
+                    rowtop = str(curx)[0:2]
+                    prefix = "  "
+                    suffix = " "
+                    rowmid = str(curx)[2:5]
+                elif seclength == 9:
+                    # 100 000 000
+                    rowtop = str(curx)[0:3]
+                    prefix = " "
+                    suffix = " "
+                    rowmid = str(curx)[3:6]
+                rowbot = str(curx)[-3:]
+                xtop.append(prefix+str(rowtop)+suffix)
+                xmid.append(" "+str(rowmid)+" ")
+                xbot.append(" "+str(rowbot)+" ")
+            case _:
+                xtop.append("ERROR")
+                xmid.append("ERROR")
+                xbot.append("ERROR")
+    xtop.append("   ")
+    xmid.append("   ")
+    xbot.append("   ")
+    # Display the X Axis row.
+    art.cd(2, '', "║", "", False)
+    art.cd(2, '', str(xtop[0]), "", False)
+
+    i = 1
+    for curx in range(edgeleft, edgeright+1):
+        if curx < 0 and edgetop < 0:  # Alpha Quadrant
+            art.cd(4, '', str(xtop[i]), "", False)
+        elif curx > 0 and edgetop < 0:  # Beta Quadrant
+            art.cd(1, '', str(xtop[i]), "", False)
+        elif curx > 0 and edgetop > 0:  # Delta Quadrant
+            art.cd(3, '', str(xtop[i]), "", False)
+        elif curx < 0 and edgetop > 0:  # Gamma Quadrant
+            art.cd(5, '', str(xtop[i]), "", False)
+        else:
+            art.cd(15, '', str(xtop[i]), "", False)
+        i = i+1
+    art.cd(2, '', "║", "", True)
+    art.cd(2, '', "║", "", False)
+    art.cd(2, '', str(xmid[0]), "", False)
+    i = 1
+    for curx in range(edgeleft, edgeright+1):
+        # print("")
+        # print("Current X: "+str(curx))
+        # print("Current I: "+str(i))
+
+        if curx < 0 and edgetop < 0:  # Alpha Quadrant
+            art.cd(4, '', str(xmid[i]), "", False)
+        elif curx > 0 and edgetop < 0:  # Beta Quadrant
+            art.cd(1, '', str(xmid[i]), "", False)
+        elif curx > 0 and edgetop > 0:  # Delta Quadrant
+            art.cd(3, '', str(xmid[i]), "", False)
+        elif curx < 0 and edgetop > 0:  # Gamma Quadrant
+            art.cd(5, '', str(xmid[i]), "", False)
+        else:
+            art.cd(15, '', str(xmid[i]), "", False)
+        i = i+1
+        # print("")
+    art.cd(2, '', "║", "", True)
+    art.cd(2, '', "║", "", False)
+    art.cd(2, '', str(xbot[0]), "", False)
+    i = 1
+    for curx in range(edgeleft, edgeright+1):
+
+        if curx < 0 and edgetop < 0:  # Alpha Quadrant
+            art.cd(4, '', str(xbot[i]), "", False)
+        elif curx > 0 and edgetop < 0:  # Beta Quadrant
+            art.cd(1, '', str(xbot[i]), "", False)
+        elif curx > 0 and edgetop > 0:  # Delta Quadrant
+            art.cd(3, '', str(xbot[i]), "", False)
+        elif curx < 0 and edgetop > 0:  # Gamma Quadrant
+            art.cd(5, '', str(xbot[i]), "", False)
+        else:
+            art.cd(15, '', str(xbot[i]), "", False)
+        i = i+1
+    art.cd(2, '', "║", "", True)
+    # END X AXIS DISPLAY
+
+    # For the Y Axis
+    ytop = []
+    ymid = []
+    ybot = []
+    # for cury in range(2, -3, -1):
+    for cury in range(edgetop, edgebottom, -1):
+        seclength = len(str(cury))  # Get the length of the pointer
+        #! Because -100 shows strlen of 4.
+        # print("")
+        # print("Cury is: "+str(cury))
+        # print("Before: "+str(seclength))
+        if cury < 0 and cury >= -999:
+            seclength = 3
+        elif cury <= -1000 and cury >= -9999:
+            seclength = 4
+        elif cury <= -10000 and cury >= -99999:
+            seclength = 5
+        elif cury <= -100000 and cury >= -999999:
+            seclength = 6
+        elif cury <= -1000000 and cury >= -9999999:
+            seclength = 7
+        elif cury <= -10000000 and cury >= -99999999:
+            seclength = 8
+        elif cury <= -100000000 and cury >= -999999999:
+            seclength = 9
+        # print("After: "+str(seclength))
+        match seclength:  # Match the length of the pointer.
+            case seclength if seclength <= 3:  # From 0 - 999
+                # Since the length is 3, we will never have anything in the top or bottom rows and we append blanks to the list.
+                ytop.append("   ")
+                ybot.append("   ")
+                # If the number is less than -10 and less than 10:
+                if cury > -10 and cury < 10:
+                    # If a negative number, convert it to positive.
+                    if cury < 0:
+                        cury = cury * -1
+                    # Append the number to the list.
+                    ymid.append(" "+str(cury)+" ")
+                # If the number is between 10 and 99
+                elif cury >= 10 and cury < 100:  # Positive Formatter
+                    # Append the number to the list.
+                    ymid.append(" "+str(cury)+"")
+                # If the number is between -10 and -99
+                elif cury > -100 and cury <= -10:  # Negative Formatter
+                    # If a negative number, convert it to positive.
+                    cury = cury * -1
+                    # Append the number to the list.
+                    ymid.append(" "+str(cury)+"")
+                elif cury >= 100:  # Positive Formatter
+                    # Append the number to the list.
+                    ymid.append(""+str(cury)+"")
+                elif cury <= -100:  # Negative Formatter
+                    # If a negative number, convert it to positive.
+                    cury = cury * -1
+                    # Append the number to the list.
+                    ymid.append(""+str(cury)+"")
+                else:
+                    print("Something went wrong. Quitting.")
+                    quit()
+            case seclength if seclength >= 4 and seclength <= 6:  # From 1000 - 999999
+                # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
+                if cury < 0:
+                    cury = cury*-1
+                if seclength == 4:
+                    # 1000
+                    rowtop = str(cury)[0:1]
+                    prefix = "  "
+                    suffix = ""
+                elif seclength == 5:
+                    # 10000
+                    rowtop = str(cury)[0:2]
+                    prefix = " "
+                    suffix = ""
+                elif seclength == 6:
+                    # 100000
+                    rowtop = str(cury)[0:3]
+                    prefix = ""
+                    suffix = ""
+                rowmid = str(cury)[-3:]
+                ytop.append(prefix+str(rowtop)+suffix)
+                ymid.append(""+str(rowmid)+"")
+                ybot.append("   ")
+            case seclength if seclength >= 7 and seclength <= 9:  # From 1000000 - 999999999
+                # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
+                if cury < 0:
+                    cury = cury*-1
+                if seclength == 7:
+                    # 1 000 000
+                    rowtop = str(cury)[0:1]
+                    prefix = "  "
+                    suffix = ""
+                    rowmid = str(cury)[1:4]
+                elif seclength == 8:
+                    # 10 000 000
+                    rowtop = str(cury)[0:2]
+                    prefix = " "
+                    suffix = ""
+                    rowmid = str(cury)[2:5]
+                elif seclength == 9:
+                    # 100 000 000
+                    rowtop = str(cury)[0:3]
+                    prefix = ""
+                    suffix = ""
+                    rowmid = str(cury)[3:6]
+                rowbot = str(cury)[-3:]
+                ytop.append(prefix+str(rowtop)+suffix)
+                ymid.append(""+str(rowmid)+"")
+                ybot.append(""+str(rowbot)+"")
+            case _:
+                ytop.append("ERR")
+                ymid.append("ERR")
+                ybot.append("ERR")
+
+    # Display the Y Axis row.
+    i = 0
+    for cury in range(edgetop, edgebottom, -1):
+        # print("")
+        # print("Current Y: "+str(cury))
+        # print("Current I: "+str(i))
+        # print("YTOP: "+str(ytop))
+        # print("YMID: "+str(ymid))
+        # print("YBOT: "+str(ybot))
+        if cury < 0 and edgeleft < 0:  # Alpha Quadrant
+            art.cd(2, '', "║", "", False)
+            art.cd(4, '', str(ytop[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(4, '', str(ymid[i]), "", False)
+            # This code will give us the current coordinates to check for stars.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(4, '', str(ybot[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+        elif cury < 0 and edgeleft > 0:  # Beta Quadrant
+            art.cd(2, '', "║", "", False)
+            art.cd(1, '', str(ytop[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(1, '', str(ymid[i]), "", False)
+            # This code will give us the current coordinates to check for stars.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(1, '', str(ybot[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+        elif cury > 0 and edgeleft > 0:  # Delta Quadrant
+            art.cd(2, '', "║", "", False)
+            art.cd(3, '', str(ytop[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(3, '', str(ymid[i]), "", False)
+            # This code will give us the current coordinates to check for stars.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(3, '', str(ybot[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+        elif cury > 0 and edgeleft < 0:  # Gamma Quadrant
+            art.cd(2, '', "║", "", False)
+            art.cd(5, '', str(ytop[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(5, '', str(ymid[i]), "", False)
+            # This code will give us the current coordinates to check for stars.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(5, '', str(ybot[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+        else:
+            art.cd(2, '', "║", "", False)
+            art.cd(15, '', str(ytop[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                if int(ymid[i].strip()) == 0 and curx == 0:
+                    art.cd('red', '', "  ┬  ", 0, False)
+                else:
+                    #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                    art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(15, '', str(ymid[i]), "", False)
+            # This code will give us the current coordinates to check for stars.
+            for curx in range(edgeleft, edgeright):
+                if int(ymid[i].strip()) == 0 and curx == 0:
+                    art.cd('light_cyan', '', "", 0, False)
+                    art.cd('red', '', "├ ", 0, False)
+                    art.cd('light_cyan', '', ".", 0, False)
+                    art.cd('red', '', " ┤", 0, False)
+                    art.cd('light_cyan', '', "", 0, False)
+                else:
+                    #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                    art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+            art.cd(2, '', "║", "", False)
+            art.cd(15, '', str(ybot[i]), "", False)
+            # This code will give us the current coordinates to check for Other.
+            for curx in range(edgeleft, edgeright):
+                if int(ymid[i].strip()) == 0 and curx == 0:
+                    art.cd('red', '', "  ┴  ", 0, False)
+                else:
+                    #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
+                    art.cd('light_cyan', '', " x,y ", 0, False)
+            art.cd(2, '', "║", "", True)
+
+        i = i+1
+    #! BUGGGGGGGGGGGGGGGG: The crosshair currently only shows up in 0,0. Need to have it show up in the center of the x and y coordinates.
+    # * Sensor Information Bar
+    art.cd(2, '', "╠═══════════════════════════════════════════════════════╩═══════════════════════════════════════════════════════╣", "", True)
+    art.cd(2, '', "║                                                                                                               ║", "", True)
+
+    # * End the sensor window
+    art.cd(2, '', "╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════╝", "", True)
+
+    '''
+    By default, the console size is 120x30, subtract 1 for the command prompt, one for the sector information above the command prompt, and two more for the frames on either side, the viewable space is 118x26. Subtract 3 on the left and top for coordinates and we are left with a viewable space of 115x22. We will also shave three off the right side so that we can have an odd number of sectors on the X axis and show the center cursor, so we end up with 
+
+    sectors will appear in columns of 3:
+╔═══════════════════════════════════════════════════════╦════════════════════════════════════════════════════╗
+║                                                                                          10       100  100 ║
+║     1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   ...  000  ...  000  000 ║
+║                                                                                                   000  001 ║
+║                                                                                                            ║
+║ 1   *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *  ║   
+║                                                                                                            ║
+║                                                                                                            ║
+║                                                                                                            ║
+║ 2   *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *  ║
+║                                                                                                            ║
+║                                                                                                            ║
+║ 10                                             Ports:0┬1:Planets                                           ║
+╠000  *    .    .    *    *    .    .    *    *    .  ├ • ┤  *    *    .    .    *    *    .    .    *    *  ║
+║                                                Ships:2┴0:Mines                                             ║
+║                                                                                                            ║
+║100                                                                                                         ║
+║000  *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *  ║
+║000                                                                                                         ║
+║                                                                                                            ║
+║                                                                                                            ║
+║100                                                                                                         ║
+║000  *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *    .    .    *    *  ║
+║000                                                                                                         ║
+║                                                                                                            ║
+╠════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+║ [11,10000] Federation Space, Star Name                                                                     ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Command Prompt (?): 
+    
+    
+    What happens at the edge of the galaxy? Don't move part the outer edge. The 
+    What happens if the galaxy is smaller than 110 sectors? Center in on 0,0 and draw the numbers that exist.
+    |    2  1  0  1  2 |
+    |                  |
+    | 2  *     *  *  . |
+    |                  |
+    |                  |
+    | 1     *     *    |
+    |                  |
+    |                  |
+    | 0       [.]    * |
+    |                  |
+    |                  |
+    | 1  *        *  . |
+    |                  |
+    |                  |
+    | 2     .  *       |
+    |                  |
+    ...
+    |100               |
+    |000 *  .  *     * | <-- Sector 100,000,123
+    |123               |
+
+    Negative numbers will not be shown. Instead, there will be four different colours signifying the four different quadrants (alpha, beta, delta, gamma).
+
+    The square brackets denote the current location of the user.
+
+    Characters from https://en.wikipedia.org/wiki/Code_page_437
+
+    ░ ▒ ▓ █ ▄ ▀ ■ ▌▐ │ ┤ ╡ ╢ ╖ ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐ └ ┴ ┬ ├ ─ ┼ ╞ ╟ ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧ ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫ ╪ ┘ ┌
+    · ∙ ° ° • . * 
+
+
+
+    '''
 
 
 # The Main Menu
