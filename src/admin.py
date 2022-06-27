@@ -816,13 +816,19 @@ def galaxybrowser():
                 art.cd('light_cyan', '', " x,y ", 0, False)
             art.cd(2, '', "║", "", True)
 
-            art.cd(2, '', "║", "", False)
+            if i == 2:
+                art.cd(2, '', "╠", "", False)
+            else:
+                art.cd(2, '', "║", "", False)
             art.cd(4, '', str(ymid[i]), "", False)
             # This code will give us the current coordinates to check for stars.
             for curx in range(edgeleft, edgeright):
                 #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
                 art.cd('light_cyan', '', " x,y ", 0, False)
-            art.cd(2, '', "║", "", True)
+            if i == 2:
+                art.cd(2, '', "╣", "", True)
+            else:
+                art.cd(2, '', "║", "", True)
 
             art.cd(2, '', "║", "", False)
             art.cd(4, '', str(ybot[i]), "", False)
@@ -841,13 +847,19 @@ def galaxybrowser():
                 art.cd('light_cyan', '', " x,y ", 0, False)
             art.cd(2, '', "║", "", True)
 
-            art.cd(2, '', "║", "", False)
+            if i == 2:
+                art.cd(2, '', "╠", "", False)
+            else:
+                art.cd(2, '', "║", "", False)
             art.cd(1, '', str(ymid[i]), "", False)
             # This code will give us the current coordinates to check for stars.
             for curx in range(edgeleft, edgeright):
                 #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
                 art.cd('light_cyan', '', " x,y ", 0, False)
-            art.cd(2, '', "║", "", True)
+            if i == 2:
+                art.cd(2, '', "╣", "", True)
+            else:
+                art.cd(2, '', "║", "", True)
 
             art.cd(2, '', "║", "", False)
             art.cd(1, '', str(ybot[i]), "", False)
@@ -866,13 +878,19 @@ def galaxybrowser():
                 art.cd('light_cyan', '', " x,y ", 0, False)
             art.cd(2, '', "║", "", True)
 
-            art.cd(2, '', "║", "", False)
+            if i == 2:
+                art.cd(2, '', "╠", "", False)
+            else:
+                art.cd(2, '', "║", "", False)
             art.cd(3, '', str(ymid[i]), "", False)
             # This code will give us the current coordinates to check for stars.
             for curx in range(edgeleft, edgeright):
                 #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
                 art.cd('light_cyan', '', " x,y ", 0, False)
-            art.cd(2, '', "║", "", True)
+            if i == 2:
+                art.cd(2, '', "╣", "", True)
+            else:
+                art.cd(2, '', "║", "", True)
 
             art.cd(2, '', "║", "", False)
             art.cd(3, '', str(ybot[i]), "", False)
@@ -891,13 +909,19 @@ def galaxybrowser():
                 art.cd('light_cyan', '', " x,y ", 0, False)
             art.cd(2, '', "║", "", True)
 
-            art.cd(2, '', "║", "", False)
+            if i == 2:
+                art.cd(2, '', "╠", "", False)
+            else:
+                art.cd(2, '', "║", "", False)
             art.cd(5, '', str(ymid[i]), "", False)
             # This code will give us the current coordinates to check for stars.
             for curx in range(edgeleft, edgeright):
                 #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
                 art.cd('light_cyan', '', " x,y ", 0, False)
-            art.cd(2, '', "║", "", True)
+            if i == 2:
+                art.cd(2, '', "╣", "", True)
+            else:
+                art.cd(2, '', "║", "", True)
 
             art.cd(2, '', "║", "", False)
             art.cd(5, '', str(ybot[i]), "", False)
@@ -919,7 +943,10 @@ def galaxybrowser():
                     art.cd('light_cyan', '', " x,y ", 0, False)
             art.cd(2, '', "║", "", True)
 
-            art.cd(2, '', "║", "", False)
+            if i == 2:
+                art.cd(2, '', "╠", "", False)
+            else:
+                art.cd(2, '', "║", "", False)
             art.cd(15, '', str(ymid[i]), "", False)
             # This code will give us the current coordinates to check for stars.
             for curx in range(edgeleft, edgeright):
@@ -932,7 +959,10 @@ def galaxybrowser():
                 else:
                     #art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
                     art.cd('light_cyan', '', " x,y ", 0, False)
-            art.cd(2, '', "║", "", True)
+            if i == 2:
+                art.cd(2, '', "╣", "", True)
+            else:
+                art.cd(2, '', "║", "", True)
 
             art.cd(2, '', "║", "", False)
             art.cd(15, '', str(ybot[i]), "", False)
