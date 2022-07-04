@@ -80,6 +80,23 @@ def setup():
 
     art.cd(colour, '', "User Directory generated.", "reset", True)
     colour = colour + 1
+
+    # Create Settings Table
+    connection = db.stdb()
+    query = "CREATE TABLE `settings` (`sid` int(24) NOT NULL, `settingname` varchar(128) NOT NULL, `settingvalue` varchar(128) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `settings` ADD PRIMARY KEY (`sid`);"
+    db.query(connection, query)
+
+    connection = db.stdb()
+    query = "ALTER TABLE `settings` MODIFY `sid` int(24) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
+
+    art.cd(colour, '', "Game Settings prepared.", "reset", True)
+    colour = colour + 1
+
     # Create High Scores Table
     connection = db.stdb()
     query = "CREATE TABLE `highscores` (`hsid` int(2) NOT NULL, `pid` int(9) NOT NULL, `score` int(64) NOT NULL, `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP)"
@@ -181,17 +198,17 @@ def setup():
     art.cd(colour, '', "Aligning planet orbits.", "reset", True)
     colour = colour + 1
 
-    # Create the Civilizations table
+    # Create the Empires table
     connection = db.stdb()
-    query = "CREATE TABLE `civilizations` (`cid` int(128) NOT NULL, `secid` int(128), `x` int(128) NOT NULL, `y` int(128) NOT NULL, `civname` varchar(128))"
+    query = "CREATE TABLE `empires` (`eid` int(128) NOT NULL, `secid` int(128), `x` int(128) NOT NULL, `y` int(128) NOT NULL, `empname` varchar(128))"
     db.query(connection, query)
 
     connection = db.stdb()
-    query = "ALTER TABLE `civilizations` ADD PRIMARY KEY (`cid`);"
+    query = "ALTER TABLE `empires` ADD PRIMARY KEY (`eid`);"
     db.query(connection, query)
 
     connection = db.stdb()
-    query = "ALTER TABLE `civilizations` MODIFY `cid` int(128) NOT NULL AUTO_INCREMENT;"
+    query = "ALTER TABLE `empires` MODIFY `eid` int(128) NOT NULL AUTO_INCREMENT;"
     db.query(connection, query)
 
     art.cd(colour, '', "Creating the conditions for life.", "reset", True)

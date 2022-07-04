@@ -132,6 +132,11 @@ def bb_main_menu():
         y = radius
         # print(x)
         # print(y)
+        # Save the radius of the galaxy to the settings table.
+        connection = db.stdb()
+        query = "INSERT INTO `settings` (`settingname`, `settingvalue`) VALUES ('galaxyradius',"+str(
+            radius)+")"
+        db.query(connection, query)
 
         # * Create counters
         sectorcount = 0  # Total number of sectors tracker
