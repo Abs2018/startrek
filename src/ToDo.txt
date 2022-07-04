@@ -40,3 +40,6 @@ Ships will have a maximum tonnage that the equipment can add up to. If passing t
    eg: betazoid, can tell if someone is lying. Vulcan: nerve pinch, etc.
 
 
+TASKS:
+======
+- In admin.py, show the sector details when using the galaxy browser.

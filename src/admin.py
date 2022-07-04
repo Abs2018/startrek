@@ -590,26 +590,27 @@ def galaxymenu():
             command = input(" ")
 
         match command:
-            case '?':
-                adm_main_menu()
+            case ('?' | ""):
+                print("Help")
+                galaxymenu()
             case ('q' | 'Q'):
                 adm_main_menu()
             case _:
                 startingpoint = command.split(',')
                 locationx = int(startingpoint[0].strip())
                 locationy = int(startingpoint[1].strip())
-                if locationx < galrad*-1 or locationx > galrad-1 or locationy < galrad*-1 or locationy > galrad-1:
+                if locationx < galrad*-1 or locationx > galrad-1 or locationy < galrad*-1 or locationy > galrad:
                     print("")
                     art.cd(
                         1, '', "This number is beyond the edge of the galaxy. Try again.", 0, False)
                     print("")
                     galaxymenu()
                 else:
-                    galaxybrowser(startingpoint)
+                    galaxybrowser(startingpoint, galrad)
                     galaxymenu()
 
 
-def galaxybrowser(startingpoint):
+def galaxybrowser(startingpoint, galrad):
 
     os.system('cls' if os.name == 'nt' else 'clear')
     if startingpoint == "":
@@ -632,7 +633,7 @@ def galaxybrowser(startingpoint):
     # Row 1
     art.cd(2, '', "╔═══════════════════════════════════════════════════════╦═══════════════════════════════════════════════════════╗", "", True)
 
-    def displayxaxis(edgeleft, edgeright, xposition, radius):
+    def displayxaxis(edgeleft, edgeright, xposition, galrad):
         # Row 2-4: Display the X axis
         # Three arrays: xtop, xmid, xbot. They will hold the values for each column in this row.
         xtop = ["   "]
@@ -743,9 +744,9 @@ def galaxybrowser(startingpoint):
                     xmid.append(" "+str(rowmid)+" ")
                     xbot.append(" "+str(rowbot)+" ")
                 case _:
-                    xtop.append("ERROR")
-                    xmid.append("ERROR")
-                    xbot.append("ERROR")
+                    xtop.append(" RAD ")
+                    xmid.append(" IAT ")
+                    xbot.append(" ION ")
         xtop.append("   ")
         xmid.append("   ")
         xbot.append("   ")
@@ -792,7 +793,6 @@ def galaxybrowser(startingpoint):
         art.cd(2, '', str(xbot[0]), "", False)
         i = 1
         for curx in range(edgeleft, edgeright+1):
-
             if curx < 0 and xposition < 0:  # Alpha Quadrant
                 art.cd(4, '', str(xbot[i]), "", False)
             elif curx > 0 and xposition < 0:  # Beta Quadrant
@@ -809,7 +809,7 @@ def galaxybrowser(startingpoint):
 
     displayxaxis(edgeleft, edgeright, edgetop, galrad)
 
-    def displaycoordinate(axis, row, coordinate, edge):
+    def displaycoordinate(axis, row, coordinate, edge, galrad):
         colorcoordinate = coordinate
         seclength = len(str(coordinate))  # Get the length of the pointer
         #! Because -100 shows strlen of 4.
@@ -988,7 +988,6 @@ def galaxybrowser(startingpoint):
                         art.cd(colour, '', "⁚", "", False)
                     elif len(results) == 3:
                         colour = row['colour']
-                        # art.cd(colour, '', "᨞", "", False)
                         art.cd(colour, '', "⁖", "", False)
                     elif len(results) == 4:
                         colour = row['colour']
@@ -1012,7 +1011,7 @@ def galaxybrowser(startingpoint):
         else:
             art.cd(2, '', " ", "", False)
 
-    def displaysensorrow(edgeleft, edgeright, edgetop, edgebottom):
+    def displaysensorrow(edgeleft, edgeright, edgetop, edgebottom, galrad):
         # This is a marker for the Y axis to determine where we are in the column.
         y = 0
         # This is a marker to determine which position in the row we are in (eg: top (0), middle (1), or bottom (2))
@@ -1033,14 +1032,14 @@ def galaxybrowser(startingpoint):
                             art.cd(2, '', "║", "", False)
                         # In each Sensor Row exists a top, middle, and bottom row.
                         coordnumber = displaycoordinate(
-                            'y', position, cury, edgeleft)
+                            'y', position, cury, edgeleft, galrad)
                         # art.cd(4, '', " ", "", False)
                         # art.cd(4, '', str(cury), "", False)
                         # art.cd(4, '', " ", "", False)
                     # If the last column, dispay the sector name
                     elif x == 22:
                         coordnumber = displaycoordinate(
-                            'y', position, cury, edgeright-1)
+                            'y', position, cury, edgeright-1, galrad)
 
                         # coordnumber[position]
                         # art.cd(4, '', " ", "", False)
@@ -1056,6 +1055,10 @@ def galaxybrowser(startingpoint):
                             # Should we decide to indicate other top sector features, they will be displayed here.
                             if y == 2 and xcursor == 11:
                                 art.cd(172, '', "  ┬  ", 0, False)
+                            elif (cury > galrad and edgetop > galrad and cury > 0) or (cury <= galrad*-1 and edgebottom < 0):
+                                art.cd(2, '', " RAD ", 0, False)
+                            elif curx > galrad or curx < (galrad*-1)+1:
+                                art.cd(2, '', " RAD ", 0, False)
                             else:
                                 art.cd(4, '', "     ", "", False)
                         elif position == 1:  # * MIDDLE
@@ -1064,6 +1067,10 @@ def galaxybrowser(startingpoint):
                                 art.cd(172, '', "├ ", 0, False)
                                 sensormid(curx-1, cury)
                                 art.cd(172, '', " ┤", 0, False)
+                            elif (cury > galrad and edgetop > galrad and cury > 0) or (cury <= galrad*-1 and edgebottom < 0):
+                                art.cd(2, '', " IAT ", 0, False)
+                            elif curx > galrad or curx < (galrad*-1)+1:
+                                art.cd(2, '', " IAT ", 0, False)
                             else:  # * BOTTOM
                                 art.cd(172, '', "  ", 0, False)
                                 sensormid(curx-1, cury)
@@ -1072,6 +1079,10 @@ def galaxybrowser(startingpoint):
                             # Should we decide to indicate other bottom sector features, they will be displayed here.
                             if y == 2 and xcursor == 11:
                                 art.cd(172, '', "  ┴  ", 0, False)
+                            elif (cury > galrad and edgetop > galrad and cury > 0) or (cury <= galrad*-1 and edgebottom < 0):
+                                art.cd(2, '', " ION ", 0, False)
+                            elif curx > galrad or curx < (galrad*-1)+1:
+                                art.cd(2, '', " ION ", 0, False)
                             else:
                                 art.cd(4, '', "     ", "", False)
                         else:
@@ -1088,548 +1099,9 @@ def galaxybrowser(startingpoint):
 
         #! YOU NEED TO PUT THE Y COUNTER IN THE range of 3. It should only increment after the bottom row has gone up.
 
-    displaysensorrow(edgeleft, edgeright, edgetop, edgebottom)
+    displaysensorrow(edgeleft, edgeright, edgetop, edgebottom, galrad)
 
-    # # For the Y Axis
-    # ytop = []
-    # ymid = []
-    # ybot = []
-    # # for cury in range(2, -3, -1):
-    # for cury in range(edgetop, edgebottom, -1):
-    #     seclength = len(str(cury))  # Get the length of the pointer
-    #     #! Because -100 shows strlen of 4.
-    #     # print("")
-    #     # print("Cury is: "+str(cury))
-    #     # print("Before: "+str(seclength))
-    #     if cury < 0 and cury >= -999:
-    #         seclength = 3
-    #     elif cury <= -1000 and cury >= -9999:
-    #         seclength = 4
-    #     elif cury <= -10000 and cury >= -99999:
-    #         seclength = 5
-    #     elif cury <= -100000 and cury >= -999999:
-    #         seclength = 6
-    #     elif cury <= -1000000 and cury >= -9999999:
-    #         seclength = 7
-    #     elif cury <= -10000000 and cury >= -99999999:
-    #         seclength = 8
-    #     elif cury <= -100000000 and cury >= -999999999:
-    #         seclength = 9
-    #     # print("After: "+str(seclength))
-    #     match seclength:  # Match the length of the pointer.
-    #         case seclength if seclength <= 3:  # From 0 - 999
-    #             # Since the length is 3, we will never have anything in the top or bottom rows and we append blanks to the list.
-    #             ytop.append("   ")
-    #             ybot.append("   ")
-    #             # If the number is less than -10 and less than 10:
-    #             if cury > -10 and cury < 10:
-    #                 # If a negative number, convert it to positive.
-    #                 if cury < 0:
-    #                     cury = cury * -1
-    #                 # Append the number to the list.
-    #                 ymid.append(" "+str(cury)+" ")
-    #             # If the number is between 10 and 99
-    #             elif cury >= 10 and cury < 100:  # Positive Formatter
-    #                 # Append the number to the list.
-    #                 ymid.append(" "+str(cury)+"")
-    #             # If the number is between -10 and -99
-    #             elif cury > -100 and cury <= -10:  # Negative Formatter
-    #                 # If a negative number, convert it to positive.
-    #                 cury = cury * -1
-    #                 # Append the number to the list.
-    #                 ymid.append(" "+str(cury)+"")
-    #             elif cury >= 100:  # Positive Formatter
-    #                 # Append the number to the list.
-    #                 ymid.append(""+str(cury)+"")
-    #             elif cury <= -100:  # Negative Formatter
-    #                 # If a negative number, convert it to positive.
-    #                 cury = cury * -1
-    #                 # Append the number to the list.
-    #                 ymid.append(""+str(cury)+"")
-    #             else:
-    #                 print("Something went wrong. Quitting.")
-    #                 quit()
-    #         case seclength if seclength >= 4 and seclength <= 6:  # From 1000 - 999999
-    #             # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
-    #             if cury < 0:
-    #                 cury = cury*-1
-    #             if seclength == 4:
-    #                 # 1000
-    #                 rowtop = str(cury)[0:1]
-    #                 prefix = "  "
-    #                 suffix = ""
-    #             elif seclength == 5:
-    #                 # 10000
-    #                 rowtop = str(cury)[0:2]
-    #                 prefix = " "
-    #                 suffix = ""
-    #             elif seclength == 6:
-    #                 # 100000
-    #                 rowtop = str(cury)[0:3]
-    #                 prefix = ""
-    #                 suffix = ""
-    #             rowmid = str(cury)[-3:]
-    #             ytop.append(prefix+str(rowtop)+suffix)
-    #             ymid.append(""+str(rowmid)+"")
-    #             ybot.append("   ")
-    #         case seclength if seclength >= 7 and seclength <= 9:  # From 1000000 - 999999999
-    #             # Split cur x. Get the last three from the back and put it in the middle. Put the rest in the top row. The bottom stays empty.
-    #             if cury < 0:
-    #                 cury = cury*-1
-    #             if seclength == 7:
-    #                 # 1 000 000
-    #                 rowtop = str(cury)[0:1]
-    #                 prefix = "  "
-    #                 suffix = ""
-    #                 rowmid = str(cury)[1:4]
-    #             elif seclength == 8:
-    #                 # 10 000 000
-    #                 rowtop = str(cury)[0:2]
-    #                 prefix = " "
-    #                 suffix = ""
-    #                 rowmid = str(cury)[2:5]
-    #             elif seclength == 9:
-    #                 # 100 000 000
-    #                 rowtop = str(cury)[0:3]
-    #                 prefix = ""
-    #                 suffix = ""
-    #                 rowmid = str(cury)[3:6]
-    #             rowbot = str(cury)[-3:]
-    #             ytop.append(prefix+str(rowtop)+suffix)
-    #             ymid.append(""+str(rowmid)+"")
-    #             ybot.append(""+str(rowbot)+"")
-    #         case _:
-    #             ytop.append("ERR")
-    #             ymid.append("ERR")
-    #             ybot.append("ERR")
-
-    # # Display the Y Axis row.
-    # i = 0
-    # for cury in range(edgetop, edgebottom, -1):
-    #     # print("")
-    #     # print("Current Y: "+str(cury))
-    #     # print("Current I: "+str(i))
-    #     # print("YTOP: "+str(ytop))
-    #     # print("YMID: "+str(ymid))
-    #     # print("YBOT: "+str(ybot))
-    #     if cury < 0 and edgeleft < 0:  # * Alpha Quadrant
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(4, '', str(ytop[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursortop = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursortop == 10 and i == 2:
-    #                 art.cd(172, '', "  ┬  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursortop = xcursortop + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ytop[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ytop[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ytop[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╠", "", False)
-    #         else:
-    #             art.cd(2, '', "║", "", False)
-    #         art.cd(4, '', str(ymid[i]), "", False)
-    #         # This code will give us the current coordinates to check for stars.
-    #         xcursormid = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if i == 2 and xcursormid == 10:
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #                 art.cd(172, '', "├ ", 0, False)
-    #                 art.cd('light_cyan', '', ".", 0, False)
-    #                 art.cd(172, '', " ┤", 0, False)
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursormid = xcursormid + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if curx < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ymid[i]), "", False)
-    #         elif curx < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ymid[i]), "", False)
-    #         elif curx > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ymid[i]), "", False)
-    #         elif curx > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ymid[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ymid[i]), "", False)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╣", "", True)
-    #         else:
-    #             art.cd(2, '', "║", "", True)
-
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(4, '', str(ybot[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursorbot = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursorbot == 10 and i == 2:
-    #                 art.cd(172, '', "  ┴  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursorbot = xcursorbot + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ybot[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ybot[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ybot[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #     elif cury < 0 and edgeleft > 0:  # * Beta Quadrant
-    #         xcursortop = 0
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(1, '', str(ytop[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursortop == 10 and i == 2:
-    #                 art.cd(172, '', "  ┬  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursortop = xcursortop + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ytop[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ytop[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ytop[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╠", "", False)
-    #         else:
-    #             art.cd(2, '', "║", "", False)
-    #         art.cd(1, '', str(ymid[i]), "", False)
-    #         # This code will give us the current coordinates to check for stars.
-    #         xcursormid = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if i == 2 and xcursormid == 10:
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #                 art.cd(172, '', "├ ", 0, False)
-    #                 art.cd('light_cyan', '', ".", 0, False)
-    #                 art.cd(172, '', " ┤", 0, False)
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursormid = xcursormid + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ymid[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ymid[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ymid[i]), "", False)
-    #         if i == 2:
-    #             art.cd(2, '', "╣", "", True)
-    #         else:
-    #             art.cd(2, '', "║", "", True)
-
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(1, '', str(ybot[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursorbot = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursorbot == 10 and i == 2:
-    #                 art.cd(172, '', "  ┴  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursorbot = xcursorbot + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ybot[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ybot[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ybot[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #     elif cury > 0 and edgeleft > 0:  # * Delta Quadrant
-    #         xcursortop = 0
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(3, '', str(ytop[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursortop == 10 and i == 2:
-    #                 art.cd(172, '', "  ┬  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursortop = xcursortop + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ytop[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ytop[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ytop[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╠", "", False)
-    #         else:
-    #             art.cd(2, '', "║", "", False)
-    #         art.cd(3, '', str(ymid[i]), "", False)
-    #         # This code will give us the current coordinates to check for stars.
-    #         xcursormid = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if i == 2 and xcursormid == 10:
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #                 art.cd(172, '', "├ ", 0, False)
-    #                 art.cd('light_cyan', '', ".", 0, False)
-    #                 art.cd(172, '', " ┤", 0, False)
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursormid = xcursormid + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ymid[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ymid[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ymid[i]), "", False)
-    #         if i == 2:
-    #             art.cd(2, '', "╣", "", True)
-    #         else:
-    #             art.cd(2, '', "║", "", True)
-
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(3, '', str(ybot[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursorbot = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursorbot == 10 and i == 2:
-    #                 art.cd(172, '', "  ┴  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursorbot = xcursorbot + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ybot[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ybot[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ybot[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #     elif cury > 0 and edgeleft < 0:  # * Gamma Quadrant
-    #         xcursortop = 0
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(5, '', str(ytop[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursortop == 10 and i == 2:
-    #                 art.cd(172, '', "  ┬  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursortop = xcursortop + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ytop[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:  # Delta Quartant
-    #             art.cd(3, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:  # Gamme Quadrant
-    #             art.cd(5, '', str(ytop[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ytop[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╠", "", False)
-    #         else:
-    #             art.cd(2, '', "║", "", False)
-    #         art.cd(5, '', str(ymid[i]), "", False)
-    #         # This code will give us the current coordinates to check for stars.
-    #         xcursormid = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if i == 2 and xcursormid == 10:
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #                 art.cd(172, '', "├ ", 0, False)
-    #                 art.cd('light_cyan', '', ".", 0, False)
-    #                 art.cd(172, '', " ┤", 0, False)
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursormid = xcursormid + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ymid[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ymid[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ymid[i]), "", False)
-    #         if i == 2:
-    #             art.cd(2, '', "╣", "", True)
-    #         else:
-    #             art.cd(2, '', "║", "", True)
-
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(5, '', str(ybot[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursorbot = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursorbot == 10 and i == 2:
-    #                 art.cd(172, '', "  ┴  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursorbot = xcursorbot + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ybot[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ybot[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ybot[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #     else:
-    #         xcursortop = 0
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(15, '', str(ytop[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursortop == 10 and i == 2:
-    #                 art.cd(172, '', "  ┬  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursortop = xcursortop + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ytop[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ytop[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ytop[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ytop[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-
-    #         if i == 2:
-    #             art.cd(2, '', "╠", "", False)
-    #         else:
-    #             art.cd(2, '', "║", "", False)
-    #         art.cd(15, '', str(ymid[i]), "", False)
-    #         # This code will give us the current coordinates to check for stars.
-    #         xcursormid = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if i == 2 and xcursormid == 10:
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #                 art.cd(172, '', "├ ", 0, False)
-    #                 art.cd('light_cyan', '', ".", 0, False)
-    #                 art.cd(172, '', " ┤", 0, False)
-    #                 art.cd('light_cyan', '', "", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursormid = xcursormid + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ymid[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ymid[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ymid[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ymid[i]), "", False)
-    #         if i == 2:
-    #             art.cd(2, '', "╣", "", True)
-    #         else:
-    #             art.cd(2, '', "║", "", True)
-
-    #         art.cd(2, '', "║", "", False)
-    #         art.cd(15, '', str(ybot[i]), "", False)
-    #         # This code will give us the current coordinates to check for Other.
-    #         xcursorbot = 0
-    #         for curx in range(edgeleft, edgeright):
-    #             if xcursorbot == 10 and i == 2:
-    #                 art.cd(172, '', "  ┴  ", 0, False)
-    #             else:
-    #                 # art.cd('light_cyan', '', " "+str(curx)+","+str(cury)+" ", 0, False)
-    #                 art.cd('light_cyan', '', " x,y ", 0, False)
-    #             xcursorbot = xcursorbot + 1
-    #         #! Try to show the Y coords on the right in the appropriate colour.
-    #         if cury < 0 and edgeright < 0:  # Alpha Quadrant
-    #             art.cd(4, '', str(ybot[i]), "", False)
-    #         elif cury < 0 and edgeright > 0:  # Beta Quadrant
-    #             art.cd(1, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright > 0:
-    #             art.cd(3, '', str(ybot[i]), "", False)
-    #         elif cury > 0 and edgeright < 0:
-    #             art.cd(5, '', str(ybot[i]), "", False)
-    #         else:
-    #             art.cd(15, '', str(ybot[i]), "", False)
-    #         art.cd(2, '', "║", "", True)
-    #     i = i+1
-
-    displayxaxis(edgeleft, edgeright, edgebottom, galrad)
+    displayxaxis(edgeleft, edgeright, edgebottom+1, galrad)
     # * Sensor Information Bar
     art.cd(2, '', "╠═══════════════════════════════════════════════════════╩═══════════════════════════════════════════════════════╣", "", True)
     art.cd(2, '', "║                                                                                                               ║", "", True)
