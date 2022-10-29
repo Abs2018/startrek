@@ -17,6 +17,8 @@ shipClass = shipClass.shipClass()
 
 # import cgi
 
+# TODO:
+#! Determine if we want rogue planets to appear in Galaxy Browser, or if they should be a surprise?
 
 connection = db.stdb()
 if connection == "FALSE":
@@ -187,7 +189,7 @@ def adm_main_menu():
                 empire_menu()
             case ('g' | 'G'):
                 # Galaxy Viewer.
-                galaxymenu()
+                galaxymenu(0, 0)
             case ('s' | 'S'):
                 # Ship viewer.
                 ship_menu()
@@ -564,7 +566,7 @@ def sector_menu():
                 adm_main_menu()
 
 
-def galaxymenu():
+def galaxymenu(locationx, locationy):
     # Ensure that the galaxy has been created. Else quit.
     galrad = galaxyradius()
     if type(galrad) != int:
@@ -588,26 +590,117 @@ def galaxymenu():
             art.cd(226, '', "[?]", '', False)
             art.cd('light_cyan', '', ": ", 0, False)
             command = input(" ")
-
+        startingpoint = []
         match command:
-            case ('?' | ""):
-                print("Help")
-                galaxymenu()
+            case ('?' | ""):  # The "" here prevents the code from above running.
+                print("")
+                art.cd(226, '', "\tGALAXY VIEWER", "", True)
+                print("")
+                # Row 1
+                art.cd(5, '', "<", "", False)
+                art.cd('light_cyan', '', "D", "", False)
+                art.cd(5, '', "> ", "", False)
+                art.cd(2, '', "Sector Details ", "", True)
+                # Row 2
+                art.cd(5, '', "<", "", False)
+                art.cd('light_cyan', '', "M", "", False)
+                art.cd(5, '', "> ", "", False)
+                art.cd(2, '', "Map Mode", "", True)
+
+                # Row ??
+                print("")
+                print("")
+                art.cd(5, '', "<", "", False)
+                art.cd('226', '', "Q", "", False)
+                art.cd(5, '', "> ", "", False)
+                art.cd(2, '', "Return to Configuration Menu", "", True)
+                # Footer
+                art.cd("", "", "", "reset", True)
+                galaxymenu(locationx, locationy)
+            case ('d' | 'D'):
+                # Sector details
+                pass
+            case ('l' | 'L'):
+                # Display Legend
+                pass
+            case ('m' | 'M'):
+                # Map Mode
+                # Empires, environmental, etc.
+                pass
+            case '1':
+                locationx = locationx-1
+                locationy = locationy-1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '2':
+                locationy = locationy-1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '3':
+                locationx = locationx+1
+                locationy = locationy-1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '4':
+                locationx = locationx-1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '6':
+                locationx = locationx+1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '7':
+                locationx = locationx-1
+                locationy = locationy+1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '8':
+                locationy = locationy+1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
+            case '9':
+                locationx = locationx+1
+                locationy = locationy+1
+                startingpoint.append(str(locationx))
+                startingpoint.append(str(locationy))
+                galaxybrowser(startingpoint, galrad)
+                galaxymenu(locationx, locationy)
             case ('q' | 'Q'):
                 adm_main_menu()
             case _:
                 startingpoint = command.split(',')
-                locationx = int(startingpoint[0].strip())
-                locationy = int(startingpoint[1].strip())
-                if locationx < galrad*-1 or locationx > galrad-1 or locationy < galrad*-1 or locationy > galrad:
+                print(len(startingpoint))
+                if len(startingpoint) < 2:
                     print("")
                     art.cd(
-                        1, '', "This number is beyond the edge of the galaxy. Try again.", 0, False)
-                    print("")
-                    galaxymenu()
+                        1, '', "I don't recognize what you entered. Please enter a coordinate, like so: 0,0", '', True)
+                    galaxymenu(locationx, locationy)
                 else:
-                    galaxybrowser(startingpoint, galrad)
-                    galaxymenu()
+                    locationx = int(startingpoint[0].strip())
+                    locationy = int(startingpoint[1].strip())
+                    if locationx < galrad*-1 or locationx > galrad-1 or locationy < galrad*-1 or locationy > galrad:
+                        print("")
+                        art.cd(
+                            1, '', "This number is beyond the edge of the galaxy. Try again.", 0, False)
+                        print("")
+                        galaxymenu(locationx, locationy)
+                    else:
+                        galaxybrowser(startingpoint, galrad)
+                        galaxymenu(locationx, locationy)
 
 
 def galaxybrowser(startingpoint, galrad):
@@ -968,41 +1061,44 @@ def galaxybrowser(startingpoint, galrad):
 
     def sensormid(locationx, locationy):
         connection = db.stdb()
-        query = "SELECT `stars`.`sid`,`stars`.`scid`,`starclass`.`colour` FROM `starclass` " + \
-            "INNER JOIN `stars` " + \
-            "ON `stars`.`scid`=`starclass`.`scid` " + \
-            "WHERE `stars`.`x` = '" + \
-            str(locationx)+"' AND `stars`.`y` = '" + \
-            str(locationy)+"'"
+        # query = "SELECT `stars`.`sid`,`stars`.`scid`,`starclass`.`colour` FROM `starclass` " + \
+        #     "INNER JOIN `stars` " + \
+        #     "ON `stars`.`scid`=`starclass`.`scid` " + \
+        #     "WHERE `stars`.`x` = '" + \
+        #     str(locationx)+"' AND `stars`.`y` = '" + \
+        #     str(locationy)+"'"
+        query = "SELECT `scid` FROM `stars` WHERE `stars`.`x` = '" + \
+            str(locationx)+"' AND `stars`.`y` = '"+str(locationy)+"'"
         # print(query)
         results = db.query(connection, query)
         if results:
             i = 1
             for row in results:
                 if i <= 1:
+                    # Get the colour of the star class
+                    connection = db.stdb()
+                    query2 = "SELECT `colour` FROM `starclass` WHERE `scid`='" + \
+                        row['scid']+"'"
+                    results2 = db.query(connection, query2)
+                    for row2 in results2:
+                        colour = row2['colour']
+
+                    # Display the stars
                     if len(results) == 1:
-                        colour = row['colour']
                         art.cd(colour, '', "•", "", False)
                     elif len(results) == 2:
-                        colour = row['colour']
                         art.cd(colour, '', "⁚", "", False)
                     elif len(results) == 3:
-                        colour = row['colour']
                         art.cd(colour, '', "⁖", "", False)
                     elif len(results) == 4:
-                        colour = row['colour']
                         art.cd(colour, '', "⁛", "", False)
                     elif len(results) == 5:
-                        colour = row['colour']
                         art.cd(colour, '', "⁙", "", False)
                     elif len(results) == 6:
-                        colour = row['colour']
                         art.cd(colour, '', "⠿", "", False)
                     elif len(results) == 7:
-                        colour = row['colour']
                         art.cd(colour, '', "፨", "", False)
                     else:
-                        colour = row['colour']
                         art.cd(colour, '', "⁕", "", False)
                     i = i + 1
                 else:

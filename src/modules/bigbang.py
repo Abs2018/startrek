@@ -437,6 +437,10 @@ def bb_main_menu():
         connection = db.stdb()
         query = "TRUNCATE `stars`"
         db.query(connection, query)
+        # Clear the Settings Table
+        connection = db.stdb()
+        query = "TRUNCATE `settings`"
+        db.query(connection, query)
 
         art.cd(23, '', "Once teeming with life, all the planets in the galaxy are no more. There shall never again be thought, love, or beauty experienced by anyone.", "reset", True)
         art.cd(22, '', "All the stars have been destroyed and the galaxy descends into darkness. Perhaps it is a blessing that there was no one around to see it.", "reset", True)
