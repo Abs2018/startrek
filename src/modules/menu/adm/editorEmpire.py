@@ -4,6 +4,7 @@ from modules import art
 from modules.menu.adm import main
 from modules import func
 
+
 def displayEmpires():
     func.clear()
     # Display all Empires
@@ -19,7 +20,15 @@ def displayEmpires():
         art.cd('light_cyan', '', str(row['eid']), "", False)
         art.cd(5, '', "> ", "", False)
         art.cd(2, '', row['empname'], "", True)
+
+    print()
+    art.cd(5, '', "<", "", False)
+    art.cd('226', '', "Q", "", False)
+    art.cd(5, '', "> ", "", False)
+    art.cd(2, '', "Quit Empire Editor", "", True)
+    print()
     command = ""
+
 
 def changeEmpireName(eid):
     func.clear()
@@ -31,10 +40,11 @@ def changeEmpireName(eid):
             break
     connection = db.stdb()
     query = "UPDATE `empires` SET `empname`='" + \
-        empireName+"' WHERE `eid`='"+str(eid)+"'"
+            empireName+"' WHERE `eid`='"+str(eid)+"'"
     # print(query)
     db.query(connection, query)
     return empireName
+
 
 def changeSpaceForceName(eid):
     func.clear()
@@ -46,22 +56,26 @@ def changeSpaceForceName(eid):
             break
     connection = db.stdb()
     query = "UPDATE `empires` SET `spaceforce`='" + \
-        SpaceForceName+"' WHERE `eid`='"+str(eid)+"'"
+            SpaceForceName+"' WHERE `eid`='"+str(eid)+"'"
     # print(query)
     db.query(connection, query)
     return SpaceForceName
+
 
 def changeSecID(eid):
     func.clear()
     pass
 
+
 def changeX(eid):
     func.clear()
     pass
 
+
 def changeY(eid):
     func.clear()
     pass
+
 
 def deleteEmpire(eid):
     func.clear()
@@ -114,8 +128,8 @@ def menu():
                                 x = changeX(eid)
                             case ('y' | 'Y'):
                                 y = changeY(eid)
-                            case ('d' | 'D'): # Delete the empire.
-                                 deleteEmpire(eid)
+                            case ('d' | 'D'):  # Delete the empire.
+                                deleteEmpire(eid)
                             case ('q' | 'Q'):
                                 main.menu()
                             case ('?' | ''):
@@ -139,7 +153,8 @@ def menu():
                                        "Space Force Name:\t", "", False)
                                 art.cd(2, '', str(spaceforcename), "", True)
                                 print("")
-                                art.cd(1, '', "Not sure that the following are needed.", "", True)
+                                art.cd(
+                                    1, '', "Not sure that the following are needed.", "", True)
                                 # Empire SecID
                                 art.cd(5, '', "<", "", False)
                                 art.cd('light_cyan', '', "S", "", False)

@@ -3,6 +3,7 @@
 # Import the required modules.
 from modules import db
 from modules import art
+from modules import func
 import modules.menu.adm.bigbang as bigbang
 from modules.menu.adm import sectors
 from modules.menu.adm import editorEmpire
@@ -11,7 +12,9 @@ from modules import funcShip
 from modules import funcGalaxy
 from modules import funcEmpires
 
+
 def menu():
+    func.clear()
     print("")
     art.cd(226, '', "\t\t\tSTAR TREK GAME CONFIGURATION MENU", "", True)
     print("")
@@ -130,4 +133,3 @@ def menu():
                 art.cd(1, '', 'Command not found. Please try again.',
                        "reset", True)
                 print("")
-
