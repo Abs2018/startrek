@@ -4,3 +4,15 @@
 
 
 
+
+
+# Create the main menu
+def menu():
+	pass
+
+
+
+
+# Run the main menu.
+menu()
+
