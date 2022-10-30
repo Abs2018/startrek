@@ -1,4 +1,4 @@
-This is a CSV (Comma Seperated Value) file. This sample will show you the headers needed for the raceclass table.
+This is a CSV (Comma Separated Value) file. This sample will show you the headers needed for the raceclass table.
 
 race,description,strength,endurance,intellect,dexterity,charisma,luck,psionic,homeworld,empire
 

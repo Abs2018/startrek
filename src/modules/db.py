@@ -1,12 +1,9 @@
 # Import the required modules.
 import mysql.connector
 from mysql.connector import Error
-
 # Database functions
 
 # Connect to the database
-
-
 def stdb():
     connection = None
     try:
@@ -24,8 +21,6 @@ def stdb():
     return connection
 
 # Execute the query
-
-
 def query(connection, query):
     cursor = connection.cursor(dictionary=True)
     try:
@@ -40,7 +35,7 @@ def query(connection, query):
     connection.close()
     return result
 
-
+# Execute many queries.
 def querymany(connection, query, data):
     cursor = connection.cursor(dictionary=True)
     try:
@@ -54,7 +49,7 @@ def querymany(connection, query, data):
     connection.close()
     return result
 
-
+# Return the rowcount
 def rowcount(connection, query):
     cursor = connection.cursor(dictionary=True)
     try:

@@ -1,0 +1,6 @@
+This is a CSV (Comma Separated Value) file. This sample will show you the headers needed for the empires table.
+
+x,y,empname,spaceforce
+
+Sample file entry:
+0,0,"The Federation","Starfleet"

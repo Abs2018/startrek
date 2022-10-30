@@ -1,0 +1,6 @@
+This is a CSV (Comma Separated Value) file. This sample will show you the headers needed for the ranks table.
+
+rankname,rankxpm,empire
+
+Sample file entry:
+"Private", 2,"Starfleet"
