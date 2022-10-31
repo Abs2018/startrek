@@ -4,6 +4,7 @@
 
 # Import the required modules.
 from modules.tables import database
+from modules.tables import userAttributesAndSkillsTable
 from modules.tables import userTable
 from modules.tables import settingsTable
 from modules.tables import highScoresTable
@@ -23,13 +24,17 @@ from modules.tables import shipsTable
 from modules.tables import ranksTable
 
 # First time setup
+
+
 def setup():
     # The colours are added to make the text look interesting.
     # You can get rid of the += if you want a single colour.
     colour = 23
     # Create the database.
-    database.createDatabase(colour) 
+    database.createDatabase(colour)
     colour = colour + 1
+    # Create the players attributes and skills table
+    userAttributesAndSkillsTable.createUserAttributesAndSkillsTable()
     # Create the players table
     userTable.createUserTable(colour)
     colour = colour + 1

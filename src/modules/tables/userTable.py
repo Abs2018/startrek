@@ -2,10 +2,11 @@
 from modules import db
 from modules import art
 
+
 def createUserTable(colour):
-	# Create User Table
-	connection = db.stdb()
-	query = """CREATE TABLE `players` (
+    # Create User Table
+    connection = db.stdb()
+    query = """CREATE TABLE `players` (
 		`pid` int(24) NOT NULL,
 		`callsign` varchar(128) NOT NULL,
 		`fname` varchar(128) NOT NULL,
@@ -30,14 +31,14 @@ def createUserTable(colour):
 		`createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 		`lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 		)"""
-	db.query(connection, query)
+    db.query(connection, query)
 
-	connection = db.stdb()
-	query = "ALTER TABLE `players` ADD PRIMARY KEY (`pid`);"
-	db.query(connection, query)
+    connection = db.stdb()
+    query = "ALTER TABLE `players` ADD PRIMARY KEY (`pid`);"
+    db.query(connection, query)
 
-	connection = db.stdb()
-	query = "ALTER TABLE `players` MODIFY `pid` int(24) NOT NULL AUTO_INCREMENT;"
-	db.query(connection, query)
+    connection = db.stdb()
+    query = "ALTER TABLE `players` MODIFY `pid` int(24) NOT NULL AUTO_INCREMENT;"
+    db.query(connection, query)
 
-	art.cd(colour, '', "User Directory generated.", "reset", True)
+    art.cd(colour, '', "User Directory generated.", "reset", True)
