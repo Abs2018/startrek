@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 colored = "1.4.4"
+windows-curses = "*"
 
 [dev-packages]
 

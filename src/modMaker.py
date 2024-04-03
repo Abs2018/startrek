@@ -5,8 +5,6 @@ from modules.modmaker.stars import stars
 # 72×23
 
 # Create the main menu
-
-
 def menu():
     while True:
         art.clear()
