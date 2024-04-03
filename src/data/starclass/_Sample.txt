@@ -1,6 +1,6 @@
 This is a CSV (Comma Seperated Value) file. This sample will show you the headers needed for the starclass table.
 
-starclass,colour
+Star Class, Colour, Shape, Temperature (Kelvin), Mass, Radius, Luminosity, Life Span, Description
 
 Sample file entry:
-O,#9bb0ff
+O,#9bb0ff,circle,30000-300000,16-350,6.6-2000,30000-255000000,10000000,
